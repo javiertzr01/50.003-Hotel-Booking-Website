@@ -9,6 +9,7 @@ import {
     Col,
     Form,
     Button,
+    ListGroup,
 } from "react-bootstrap";
 import countryList from "react-select-country-list";
 import { ErrorMessage, Formik, Field } from "formik";
@@ -176,7 +177,48 @@ export default function FormPage() {
             <Row>
                 {/* Booking Summary */}
                 <Col sm={true} md={{ order: "last" }} className="p-4">
-                    <Row className="form-container mb-3">Booking Summary</Row>
+                    <Row className="form-container mb-3">
+                        <Row className="p-2">Booking Summary</Row>
+                        <Row className="p-2">
+                            <ListGroup variant="flush">
+                                <ListGroup.Item>
+                                    <Row className="p-2">Hotel Name</Row>
+                                    <Row className="p-2">Room Type</Row>
+                                </ListGroup.Item>
+                                <ListGroup.Item>
+                                    <Row className="p-2">
+                                        <Col>
+                                            Check-in
+                                        </Col>
+                                        <Col>
+                                            {checkin}
+                                        </Col>
+                                    </Row>
+                                    <Row className="p-2">
+                                        <Col>
+                                            Check-out
+                                        </Col>
+                                        <Col>
+                                            {checkout}
+                                        </Col>
+                                    </Row>
+                                    <Row className="p-2">
+                                        Number of nights
+                                    </Row>
+                                </ListGroup.Item>
+                                <ListGroup.Item>
+                                    <Row className="p-2">
+                                        <Col>
+                                            Total:
+                                        </Col>
+                                        <Col>
+                                            {price}
+                                        </Col>
+                                    </Row>
+                                </ListGroup.Item>
+                            </ListGroup>
+                        </Row>
+                    </Row>
                 </Col>
 
                 {/* Form */}
@@ -245,6 +287,7 @@ export default function FormPage() {
                         //     }
                         // }}
                         initialValues={{
+                            guestSalutation: "",
                             guestFirstName: "",
                             guestLastName: "",
                             guestHpNum: "",
@@ -271,7 +314,32 @@ export default function FormPage() {
                                     <Row className="mb-3">
                                         <Form.Group
                                             as={Col}
-                                            sm={true}
+                                            md={2}
+                                            className="mb-3"
+                                            controlId="Salutation"
+                                        >
+                                            <Form.Label>Salutation</Form.Label>
+                                            <Form.Select
+                                                className="mb-3"
+                                                aria-label="guestSalutation"
+                                                {...formik.getFieldProps(
+                                                    "guestSalutation"
+                                                )}
+                                            >
+                                                <option
+                                                    value=""
+                                                    disabled
+                                                ></option>
+                                                <option value="mr">Mr</option>
+                                                <option value="mrs">Mrs</option>
+                                                <option value="ms">Ms</option>
+                                                <option value="mdm">Mdm</option>
+                                                <option value="dr">Dr</option>
+                                            </Form.Select>
+                                        </Form.Group>
+                                        <Form.Group
+                                            as={Col}
+                                            md={true}
                                             className="mb-3"
                                             controlId="firstName"
                                         >
@@ -306,7 +374,7 @@ export default function FormPage() {
 
                                         <Form.Group
                                             as={Col}
-                                            sm={true}
+                                            md={true}
                                             className="mb-3"
                                             controlId="lastName"
                                         >
