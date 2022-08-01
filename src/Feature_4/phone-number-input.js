@@ -3,7 +3,7 @@ import { useField } from "formik";
 import "react-phone-number-input/style.css";
 // https://codesandbox.io/s/formik-react-phone-number-input-p5jvs?file=/src/FormikPhoneInput.js
 const PhoneNumberInput = ({ onChange, formik, ...props }) => {
-    const [field, meta] = useField(props);
+    const [field] = useField(props);
     return (
         <PhoneInput
             international

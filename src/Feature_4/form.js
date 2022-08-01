@@ -1,8 +1,6 @@
 import React from "react";
 import "./form.css";
-import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
-import {useState, useEffect} from "react";
 import {
     Container,
     Row,
@@ -25,12 +23,8 @@ import { PaymentInputsWrapper, usePaymentInputs } from "react-payment-inputs";
 import { db } from "./firestore-config";
 import { collection, doc, setDoc } from "firebase/firestore/lite";
 
-// Function for adding data to Firebase asynchronously
-async function addReceipt(info, bookingsCollection) {
-    const bookingDoc = doc(bookingsCollection);
-    info.bookingRef = bookingDoc.id;
-    await setDoc(bookingDoc, info);
-}
+// Crypto imports
+var CryptoJS = require("crypto-js");
 
 let thisYear = new Date().getFullYear();
 let yearList = [];
@@ -108,38 +102,96 @@ const schema = yup.object().shape({
 });
 
 
-function sortData(key,arr){
-    let price = false;
-    for (let i = 0; i < arr.length; i++){
-        console.log(arr[i].key)
-        if (arr[i].key.localeCompare(key)){
-            console.log(key)
-            price = arr[i].price;
-            break;
-        }
-    }
-    return price;
-}
+// function sortData(key,arr){
+//     let price = false;
+//     for (let i = 0; i < arr.length; i++){
+//         console.log(arr[i].key)
+//         if (arr[i].key.localeCompare(key)){
+//             console.log(key)
+//             price = arr[i].price;
+//             break;
+//         }
+//     }
+//     return price;
+// }
 
 export default function FormPage() {
+    // Function to Encrypt PII data
+    function encrypt(data) {
+        var ciphertext = CryptoJS.AES.encrypt(
+            JSON.stringify(data),
+            "ESC-Project-Secret-Key"
+        ).toString();
+        return ciphertext;
+    }
+
+    //// Function to Decrypt PII data (If necessary)
+    // function decrypt(ciphertext){
+    //     var bytes = CryptoJS.AES.decrypt(ciphertext, "ESC-Project-Secret-Key");
+    //     var decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    //     return decryptedData
+    // }
+
     //firestore
     const bookingsCollection = collection(db, "Bookings");
 
-    const {
-        meta,
-        getCardImageProps,
-        getCardNumberProps,
-        getExpiryDateProps,
-        getCVCProps,
-        wrapperProps,
-    } = usePaymentInputs();
+    // Function for adding data to Firebase asynchronously
+    async function addReceipt(info, bookingsCollection) {
+        const bookingDoc = doc(bookingsCollection);
+        info.bookingRef = bookingDoc.id;
+        await setDoc(bookingDoc, info);
+    }
 
-    const location = useLocation()
-    //checks if state is defined, if not it will redirect to error 
-    if(!location.state) return <Navigate to="/error"/>
+    // Function to negate alphabetical input --> onChange
+    async function onNumberChange(e, props) {
+        const re = /^[0-9\b]+$/;
+        if (e.target.value === "" || re.test(e.target.value)) {
+            await props.handleChange(e);
+        }
+    }
 
-    const [price, hotel_id, dest_id, checkin, checkout, lang, currency, guests] = location.state
-    console.log(price, hotel_id, dest_id, checkin, checkout, lang, currency, guests)
+    // Card Validation const
+    const { getCardImageProps, getCardNumberProps, wrapperProps } =
+        usePaymentInputs();
+
+    // Receiving Routed Information
+    const location = useLocation();
+    // checks if state is defined, if not it will redirect to error
+    if (!location.state) return <Navigate to="/error" />;
+
+    const [
+        price,
+        hotel_id,
+        dest_id,
+        checkin,
+        checkout,
+        lang,
+        currency,
+        guests,
+    ] = location.state;
+
+    // Calculate the number of nights with the checkin, checkout information
+    function calculateNights(checkin, checkout) {
+        var date1 = new Date(checkin);
+        var date2 = new Date(checkout);
+        var timeDiff = Math.abs(date2.getTime() - date1.getTime());
+        var numberOfNights = Math.ceil(timeDiff / (1000 * 3600 * 24));
+        return numberOfNights.toString();
+    }
+
+    const nights = calculateNights(checkin, checkout);
+
+    console.log(
+        price,
+        hotel_id,
+        dest_id,
+        checkin,
+        checkout,
+        lang,
+        currency,
+        guests,
+        nights
+    );
 
     // let search = window.location.search;
     // let params = new URLSearchParams(search);
@@ -163,61 +215,47 @@ export default function FormPage() {
     //     setKey(params.get('key'))
     // }, [/*only once to refresh - prevents changing of any data input in feature 3*/])
 
-
-    async function onNumberChange(e, props) {
-        const re = /^[0-9\b]+$/;
-        if (e.target.value === "" || re.test(e.target.value)) {
-            await props.handleChange(e);
-        }
-    }
-
-
     return (
         <Container>
             <Row>
                 {/* Booking Summary */}
                 <Col sm={true} md={{ order: "last" }} className="p-4">
                     <Row className="form-container mb-3">
-                        <Row className="p-2">Booking Summary</Row>
-                        <Row className="p-2">
+                        <Form.Label>Booking Summary</Form.Label>
+                        <Form.Label>
                             <ListGroup variant="flush">
                                 <ListGroup.Item>
                                     <Row className="p-2">Hotel Name</Row>
                                     <Row className="p-2">Room Type</Row>
-                                </ListGroup.Item>
-                                <ListGroup.Item>
                                     <Row className="p-2">
-                                        <Col>
-                                            Check-in
-                                        </Col>
-                                        <Col>
-                                            {checkin}
-                                        </Col>
-                                    </Row>
-                                    <Row className="p-2">
-                                        <Col>
-                                            Check-out
-                                        </Col>
-                                        <Col>
-                                            {checkout}
-                                        </Col>
-                                    </Row>
-                                    <Row className="p-2">
-                                        Number of nights
+                                        <Col md={7}>Number of guests:</Col>
+                                        <Col>{guests}</Col>
                                     </Row>
                                 </ListGroup.Item>
                                 <ListGroup.Item>
                                     <Row className="p-2">
+                                        <Col md={7}>Check-in Date:</Col>
+                                        <Col>{checkin}</Col>
+                                    </Row>
+                                    <Row className="p-2">
+                                        <Col md={7}>Check-out Date: </Col>
+                                        <Col>{checkout}</Col>
+                                    </Row>
+                                    <Row className="p-2">
+                                        <Col md={7}>Number of nights:</Col>
+                                        <Col>{nights}</Col>
+                                    </Row>
+                                </ListGroup.Item>
+                                <ListGroup.Item>
+                                    <Row className="p-2">
+                                        <Col md={6}>Total:</Col>
                                         <Col>
-                                            Total:
-                                        </Col>
-                                        <Col>
-                                            {price}
+                                            {currency} {price}
                                         </Col>
                                     </Row>
                                 </ListGroup.Item>
                             </ListGroup>
-                        </Row>
+                        </Form.Label>
                     </Row>
                 </Col>
 
@@ -225,67 +263,70 @@ export default function FormPage() {
                 <Col md={{ span: 8 }} className="p-4">
                     <Formik
                         validationSchema={schema}
-                        onSubmit={(values, { setSubmitting }) => {
-                            setTimeout(() => {
-                                alert(JSON.stringify(values, null, 2));
-                                setSubmitting(false);
-                            }, 400);
-                        }}
                         // onSubmit={(values, { setSubmitting }) => {
-                        //     const guest = {
-                        //         firstName: values.guestFirstName,
-                        //         lastName: values.guestLastName,
-                        //         hpNumber: values.guestHpNum,
-                        //     };
-                        //     const payee = {
-                        //         firstName: values.customerFirstName,
-                        //         email: values.customerEmail,
-                        //         card: {
-                        //             name: values.cardName,
-                        //             number: values.cardNumber,
-                        //             month: values.cardMonth,
-                        //             year: values.cardYear,
-                        //             cvc: values.cardCVC,
-                        //         },
-                        //         billing: {
-                        //             address: values.billingAddress,
-                        //             city: values.billingCity,
-                        //             postal: values.billingPostalCode,
-                        //             country: values.billingCountry,
-                        //         },
-                        //     };
-                        //     const info = {
-                        //         destinationID: "tbd",
-                        //         hotelID: "tbd",
-                        //         bookingDisplayInfo: {
-                        //             nights: "tbd",
-                        //             start: "tbd",
-                        //             end: "tbd",
-                        //             adults: "tbd",
-                        //             children: "tbd",
-                        //             message: values.guestSpecialReq,
-                        //             roomType: "tbd",
-                        //         },
-                        //         price: "tbd",
-                        //         supplierBookingID: "tbd",
-                        //         supplierResponse: {
-                        //             cost: "tbd",
-                        //             bookingRef: "tbd",
-                        //             termsCond: "tbd",
-                        //             hotelTermsCond: "tbd",
-                        //         },
-                        //         bookingRef: "tbd",
-                        //         guestInfo: guest,
-                        //         payeeInfo: payee,
-                        //     };
-                        //     try {
-                        //         addReceipt(info, bookingsCollection);
-                        //         alert("Booking Completed");
-                        //     } catch (e) {
-                        //         console.log(e);
-                        //         alert(e);
-                        //     }
+                        //     setTimeout(() => {
+                        //         alert(JSON.stringify(values, null, 2));
+                        //         setSubmitting(false);
+                        //     }, 400);
                         // }}
+                        onSubmit={(values, { setSubmitting }) => {
+                            // To be encrypted
+                            const guest = {
+                                salutation: values.guestSalutation,
+                                firstName: values.guestFirstName,
+                                lastName: values.guestLastName,
+                                hpNumber: values.guestHpNum,
+                            };
+                            const payee = {
+                                firstName: values.customerFirstName,
+                                email: values.customerEmail,
+                                paymentID: "tbd",
+                                // card: {
+                                //     name: values.cardName,
+                                //     number: values.cardNumber,
+                                //     month: values.cardMonth,
+                                //     year: values.cardYear,
+                                //     cvc: values.cardCVC,
+                                // },
+                                // billing: {
+                                //     address: values.billingAddress,
+                                //     city: values.billingCity,
+                                //     postal: values.billingPostalCode,
+                                //     country: values.billingCountry,
+                                // },
+                            };
+                            const info = {
+                                destinationID: dest_id,
+                                hotelID: hotel_id,
+                                bookingDisplayInfo: {
+                                    nights: nights,
+                                    start: checkin,
+                                    end: checkout,
+                                    guests: guests,
+                                    message: values.guestSpecialReq,
+                                    roomType: "tbd",
+                                },
+                                currency: currency,
+                                price: price,
+                                supplierBookingID: "tbd",
+                                supplierResponse: {
+                                    cost: "tbd",
+                                    bookingRef: "tbd",
+                                    termsCond: "tbd",
+                                    hotelTermsCond: "tbd",
+                                },
+                                bookingRef: "tbd",
+                                guestInfo: encrypt(guest),
+                                payeeInfo: encrypt(payee),
+                            };
+                            try {
+                                addReceipt(info, bookingsCollection);
+                                alert("Booking Completed");
+                            } catch (e) {
+                                console.log(e);
+                                alert(e);
+                            }
+                        }}
                         initialValues={{
                             guestSalutation: "",
                             guestFirstName: "",
