@@ -228,27 +228,27 @@ export default function FormPage() {
                                     <Row className="p-2">Hotel Name</Row>
                                     <Row className="p-2">Room Type</Row>
                                     <Row className="p-2">
-                                        <Col md={7}>Number of guests:</Col>
+                                        <Col xl={7}>Number of guests:</Col>
                                         <Col>{guests}</Col>
                                     </Row>
                                 </ListGroup.Item>
                                 <ListGroup.Item>
                                     <Row className="p-2">
-                                        <Col md={7}>Check-in Date:</Col>
+                                        <Col xl={7}>Check-in Date:</Col>
                                         <Col>{checkin}</Col>
                                     </Row>
                                     <Row className="p-2">
-                                        <Col md={7}>Check-out Date: </Col>
+                                        <Col xl={7}>Check-out Date: </Col>
                                         <Col>{checkout}</Col>
                                     </Row>
                                     <Row className="p-2">
-                                        <Col md={7}>Number of nights:</Col>
+                                        <Col xl={7}>Number of nights:</Col>
                                         <Col>{nights}</Col>
                                     </Row>
                                 </ListGroup.Item>
                                 <ListGroup.Item>
                                     <Row className="p-2">
-                                        <Col md={6}>Total:</Col>
+                                        <Col xl={6}>Total:</Col>
                                         <Col>
                                             {currency} {price}
                                         </Col>
@@ -355,7 +355,7 @@ export default function FormPage() {
                                     <Row className="mb-3">
                                         <Form.Group
                                             as={Col}
-                                            md={2}
+                                            xl={2}
                                             className="mb-3"
                                             controlId="Salutation"
                                         >
@@ -380,7 +380,7 @@ export default function FormPage() {
                                         </Form.Group>
                                         <Form.Group
                                             as={Col}
-                                            md={true}
+                                            xl={true}
                                             className="mb-3"
                                             controlId="firstName"
                                         >
@@ -415,7 +415,7 @@ export default function FormPage() {
 
                                         <Form.Group
                                             as={Col}
-                                            md={true}
+                                            xl={true}
                                             className="mb-3"
                                             controlId="lastName"
                                         >
@@ -581,7 +581,7 @@ export default function FormPage() {
                                         {/* Card Details 1st Row*/}
                                         <Form.Group
                                             as={Col}
-                                            sm={true}
+                                            md={true}
                                             className="mb-3"
                                             controlId="cardName"
                                         >
@@ -614,7 +614,7 @@ export default function FormPage() {
 
                                         <Form.Group
                                             as={Col}
-                                            sm={true}
+                                            md={true}
                                             className="mb-3"
                                             controlId="cardNumber"
                                         >
