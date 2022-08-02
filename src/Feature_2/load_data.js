@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import axios from 'axios'
 import List from './list.js'
 
@@ -29,6 +28,7 @@ function Load_data() {
   const [prices, setPrices] = useState([])
   const [completed, setCompleted] = useState(true)
   const [lengthOfHotel, setLength] = useState(0);
+  const [badReq, setBadReq] = useState(false);
 
 
   let search = window.location.search;
@@ -40,7 +40,7 @@ function Load_data() {
   const currency = params.get('currency');
   const guests = params.get("guests");
 
-  console.log(dest_id, checkin, checkout, lang, currency, guests)
+  //console.log(dest_id, checkin, checkout, lang, currency, guests)
 
   const [link, setLink] = useState(`hotels/prices?destination_id=${dest_id}&checkin=${checkin}&checkout=${checkout}&lang=${lang}&currency=${currency}&landing_page=&partner_id=16&country_code=SG&guests=${guests}`);
   const [Hotellink, setHotelLink] = useState(`hotels?destination_id=${dest_id}`);
@@ -61,23 +61,26 @@ function Load_data() {
     //parameters to try for false and array.length == 0 : 2018-08-01
     //let link = "https://hotelapi.loyalty.dev/api/hotels/prices?destination_id=WD0M&checkin=2022-07-31&checkout=2022-08-01&lang=en_US&currency=SGD&landing_page=&partner_id=16&country_code=SG&guests=1"
     //let link = `hotels/prices?destination_id=${dest_id}&checkin=${checkin}&checkout=${checkout}&lang=${lang}&currency=${currency}&landing_page=&partner_id=16&country_code=SG&guests=${guests}`
-    const data = axios.get(link).then(response => {
-      //console.log(response); 
-      setPrices(response.data.hotels); 
-      setCompleted(response.data.completed); 
-      setLength(response.data.hotels.length)});
-  },[link])
+      const data = axios.get(link).then(response => { 
+        setPrices(response.data.hotels); 
+        setCompleted(response.data.completed); 
+        setLength(response.data.hotels.length)}).catch(response => {
+          setBadReq(true);
+        });
+    
+  },[link, completed, prices])
 
   const [hotels, setHotels] = useState([])
   useEffect(() => {
     //let link = "hotels?destination_id=WD0M"
     //let link = `hotels?destination_id=${dest_id}`
-     const data = axios.get(Hotellink).then(response => {setHotels(response.data)})
-  },[Hotellink])
+    const data = axios.get(Hotellink).then(response => {setHotels(response.data)})
+    
+  },[Hotellink, completed, hotels])
   
   //edit callback to prevent rendering
   let sorted_data = sort_data([prices,hotels]);
-  let new_data = useCallback(() => {return [sorted_data,completed,lengthOfHotel]},[sorted_data,completed,lengthOfHotel])
+  let new_data = useCallback(() => {return [sorted_data,completed,lengthOfHotel,badReq]},[sorted_data,completed,lengthOfHotel,badReq])
   return (
     <div>
       <List data = {new_data} object_input_data = {{dest_id, checkin, checkout, lang, currency, guests}}/>

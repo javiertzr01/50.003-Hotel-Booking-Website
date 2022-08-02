@@ -1,5 +1,7 @@
 import React, { useEffect, useState} from 'react';
 import ReactPaginate from 'react-paginate';
+import Placeholder from 'react-bootstrap/Placeholder';
+import Spinner from 'react-bootstrap/Spinner';
 import './List.css'
 import {Link} from "react-router-dom"
 
@@ -11,9 +13,12 @@ function List(props) {
   data = getHotelData()[0];
   const completed = getHotelData()[1]
   const lengthOfHotel = getHotelData()[2]
+  const badReq = getHotelData()[3]
   const [currentItems, setCurrentItems] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
+
+  console.log(badReq);
 
   let search = window.location.search;
   let params = new URLSearchParams(search);
@@ -77,8 +82,12 @@ function List(props) {
             activeClassName={"active"}
           />
         </div> : 
-        (completed === true && lengthOfHotel === 0) ? <div><p>There are no hotels currently available, please refresh again or try another entry.</p></div> :
-        (completed === false) ? <div><p>There are no hotels currently available for this entry, please try another entry.</p></div> : null
+        (completed === true && lengthOfHotel === 0 && badReq === false) ? <div><p>There are no hotels currently available, please refresh again or try another entry.</p></div> :
+        (badReq === false) ? <div>
+          <div>loading...</div>
+          <Spinner animation="border" role="status">loading...</Spinner>
+          </div> :
+        (badReq === true) ? <div><p>There are no hotels currently available for this entry, please try another entry.</p></div> : null
     }   
     </>
   );
