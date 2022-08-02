@@ -30,7 +30,7 @@ function ChooseDate(props) {
         startDate={startDate}
         endDate={endDate}
         minDate={new Date()}
-        dateFormat="yyyy-MM-dd"
+        dateFormat="dd-MM-yy"
       />
       <p className="errors">{formErrors.stayPeriod}</p>
       <p className="errors">{formErrors.endDate}</p>
