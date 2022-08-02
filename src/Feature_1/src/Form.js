@@ -6,14 +6,14 @@ import "./App.css";
 import { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import { ButtonGroup } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 
 export default function Form() {
   const [errors, setError] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formErrors, setFormErrors] = useState({});
-  const navigate = useNavigate();
+  const [count, setCount] = useState(0);
 
   //useStates for guests:
   const [adult, setAdult] = useState(1);
@@ -30,12 +30,6 @@ export default function Form() {
   const formValues = { dest, adult, children, room, startDate, endDate };
   const currency = "SGD";
   const lang = "en_US";
-
-  function returnStrDate(date){
-    if (!date){
-      return date.toISOString().split('T')[0];
-    }
-  }
 
   useEffect(() => {
     console.log(formErrors);
@@ -68,21 +62,42 @@ export default function Form() {
     return errors;
   };
 
+  function errorHandler(val,num){
+    //if value is null
+    if (JSON.stringify(val) === JSON.stringify({}) && num === 0){
+      return 2;
+      //"button not pressed.";
+    }
+    else if (JSON.stringify(val) === JSON.stringify({}) && num > 0){
+      return 3;
+      //"button pressed and no errors.";
+    }
+    else {
+      return 4; 
+      //"errors are present.";
+    }
+  }
+
   function handleSubmit(e) {
     e.preventDefault();
     console.log(startDate);
     console.log(endDate);
     console.log(dest);
     setFormErrors(validate(formValues));
-    //console.log(Object.keys(formErrors))
-    if (0 === Object.keys(formErrors).length) {
+    let value = errorHandler(formErrors, count);
+    setCount(count+1);
+    if (value===3) {
       setIsSubmitted(true);
-      if (isSubmitted){
-        navigate(`/search?destination_id=${dest}&checkin=${startDate ? startDate.toISOString().split('T')[0] : ""}&checkout=${endDate ? endDate.toISOString().split('T')[0] : ""}&lang=${lang}&currency=${currency}&guests=${parseInt(adult)+parseInt(children)}`
-        );
-      }
     } 
-    
+
+  }
+
+  if (isSubmitted && count > 0){
+    return (
+      <Navigate to = {`/search?destination_id=${dest}&checkin=${startDate ? startDate.toISOString().split('T')[0] : ""}&checkout=${endDate ? endDate.toISOString().split('T')[0] : ""}&lang=${lang}&currency=${currency}&guests=${parseInt(adult)+parseInt(children)}`}
+      state = {dest, startDate.toISOString().split('T')[0], endDate.toISOString().split('T')[0], lang, currency, adult, children}
+      />
+    );
   }
 
   document.body.style.background = "#bbd1ea";
