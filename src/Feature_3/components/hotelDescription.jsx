@@ -5,9 +5,12 @@ const Description = ({ description }) => {
     return <p>No desciption avaliable.</p>;
   }
   return (
-    <div>
+    <div className="container">
       <h2>Description</h2>
-      <p dangerouslySetInnerHTML={{ __html: description }}></p>
+      <p
+        className="text-start"
+        dangerouslySetInnerHTML={{ __html: description }}
+      />
     </div>
   );
 };
