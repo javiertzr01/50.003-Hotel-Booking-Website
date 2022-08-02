@@ -4,10 +4,18 @@ import Guests from "./components/Guests";
 import ChooseDate from "./components/ChooseDate";
 import "./App.css";
 import { useState, useEffect } from "react";
-import Button from "react-bootstrap/Button";
-import { ButtonGroup } from "@mui/material";
 import { Navigate, useNavigate } from "react-router-dom";
 
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import HotelIcon from "@mui/icons-material/Hotel";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+
+const theme = createTheme();
 
 export default function Form() {
   const [errors, setError] = useState(null);
@@ -62,18 +70,16 @@ export default function Form() {
     return errors;
   };
 
-  function errorHandler(val,num){
+  function errorHandler(val, num) {
     //if value is null
-    if (JSON.stringify(val) === JSON.stringify({}) && num === 0){
+    if (JSON.stringify(val) === JSON.stringify({}) && num === 0) {
       return 2;
       //"button not pressed.";
-    }
-    else if (JSON.stringify(val) === JSON.stringify({}) && num > 0){
+    } else if (JSON.stringify(val) === JSON.stringify({}) && num > 0) {
       return 3;
       //"button pressed and no errors.";
-    }
-    else {
-      return 4; 
+    } else {
+      return 4;
       //"errors are present.";
     }
   }
@@ -85,65 +91,102 @@ export default function Form() {
     console.log(dest);
     setFormErrors(validate(formValues));
     let value = errorHandler(formErrors, count);
-    setCount(count+1);
-    if (value===3) {
+    setCount(count + 1);
+    if (value === 3) {
       setIsSubmitted(true);
-    } 
-
+    }
   }
 
-  if (isSubmitted && count > 0){
+  if (isSubmitted && count > 0) {
     return (
-      <Navigate to = {`/search?destination_id=${dest}&checkin=${startDate ? startDate.toISOString().split('T')[0] : ""}&checkout=${endDate ? endDate.toISOString().split('T')[0] : ""}&lang=${lang}&currency=${currency}&guests=${parseInt(adult)+parseInt(children)}`}
-      state = {dest, startDate.toISOString().split('T')[0], endDate.toISOString().split('T')[0], lang, currency, adult, children}
+      <Navigate
+        to={`/search?destination_id=${dest}&checkin=${
+          startDate ? startDate.toISOString().split("T")[0] : ""
+        }&checkout=${
+          endDate ? endDate.toISOString().split("T")[0] : ""
+        }&lang=${lang}&currency=${currency}&guests=${
+          parseInt(adult) + parseInt(children)
+        }`}
+        state={
+          (dest,
+          startDate.toISOString().split("T")[0],
+          endDate.toISOString().split("T")[0],
+          lang,
+          currency,
+          adult,
+          children)
+        }
       />
     );
   }
 
-  document.body.style.background = "#bbd1ea";
+  // document.body.style.background = "#bbd1ea";
   return (
-    <div className="app">
-      <div className="content">
-        <div className="contain">
-          <div className="destination">
-            <Destinations
-              setDestHandler={setDest}
-              dest={dest}
-              formErrors={formErrors}
-            />
-          </div>
-          <div className="guest">
-            <Guests
-              setAdultHandler={setAdult}
-              setChildrenHandler={setChildren}
-              setRoomHandler={setRoom}
-              room={room}
-              children={children}
-              adult={adult}
-              formErrors={formErrors}
-            />
-          </div>
-          <div className="parent-flex">
-            <p>Please enter stay period: </p>
-            <div className="calendar">
-              <ChooseDate
-                setStartDateHandler={setStartDate}
-                setEndDateHandler={setEndDate}
-                startDate={startDate}
-                endDate={endDate}
+    <ThemeProvider theme={theme}>
+      <Container component="main" maxWidth="xs">
+        <Box
+          sx={{
+            marginTop: 8,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+            <HotelIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Hotel Booking
+          </Typography>
+          <Box
+            component="form"
+            noValidate
+            onSubmit={handleSubmit}
+            sx={{ mt: 3 }}
+          >
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Destinations
+                  setDestHandler={setDest}
+                  dest={dest}
+                  formErrors={formErrors}
+                  autoFocus
+                  id="destination"
+                  name="Destination"
+                />
+              </Grid>
+              <p> Please enter number of guests per room</p>
+              <Guests
+                setAdultHandler={setAdult}
+                setChildrenHandler={setChildren}
+                setRoomHandler={setRoom}
+                room={room}
+                children={children}
+                adult={adult}
                 formErrors={formErrors}
               />
-            </div>
-          </div>
-          <ButtonGroup className="search">
+
+              <Grid item xs={12}>
+                <ChooseDate
+                  setStartDateHandler={setStartDate}
+                  setEndDateHandler={setEndDate}
+                  startDate={startDate}
+                  endDate={endDate}
+                  formErrors={formErrors}
+                />
+              </Grid>
+            </Grid>
             <Button
-              onClick={handleSubmit}
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
             >
               Search for hotels
             </Button>
-          </ButtonGroup>
-        </div>
-      </div>
-    </div>
+          </Box>
+        </Box>
+      </Container>
+    </ThemeProvider>
   );
 }

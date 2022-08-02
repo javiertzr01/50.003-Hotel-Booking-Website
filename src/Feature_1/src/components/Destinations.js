@@ -1,7 +1,6 @@
 import * as React from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
-//import { AutoComplete } from "antd";
 import Box from "@mui/material/Box";
 
 import { useState, useEffect } from "react";
@@ -71,7 +70,6 @@ function Destinations(props) {
         //options={data}
         options={data}
         filterOptions={filterOptions}
-        sx={{ width: 300 }}
         renderOption={(props, option) => (
           <Box component="li" {...props} key={option._id}>
             {option.term}

@@ -1,4 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
+import TextField from "@mui/material/TextField";
+import Grid from "@mui/material/Grid";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+const theme = createTheme();
 
 function Guests(props) {
   const {
@@ -21,57 +25,50 @@ function Guests(props) {
   const handleChangeRoom = (event) => {
     setRoomHandler(event.target.value.replace(/\D/g, ""));
   };
-  // const handleValidateChangeRoom = (event) => {
-  //   const re = /^[0-9\b]+$/;
-  //       if (event.target.value === "" || re.test(event.target.value)) {
-  //         handleChangeRoom(event)
-  //       }
-  //   }
 
   return (
-    <div className="outerbox">
-      <label htmlFor="rooms" className="labels">
-        Rooms
-      </label>
-      <input
-        id="rooms"
-        type="int"
-        className="boxesroom"
-        onChange={handleChangeRoom}
-        value={room}
-      />
-      <br />
-      <p className="errors">{formErrors.room}</p>
-      <div>
-        <label htmlFor="adults" className="labels-adult">
-          Adults
-        </label>
-        <input
-          id="adults"
+    <ThemeProvider theme={theme}>
+      <Grid item xs={1} sm={4}>
+        <TextField
+          required
+          fullWidth
+          label="Rooms"
+          name="room"
+          data-testid="rooms"
           type="int"
-          className="boxesadult"
+          error={formErrors.room}
+          className="boxesroom"
+          onChange={handleChangeRoom}
+          value={room}
+        />
+        <p className="errors">{formErrors.room}</p>
+      </Grid>
+      <Grid item xs={1} sm={4}>
+        <TextField
+          required
+          fullWidth
+          label="Adult"
+          name="adult"
+          data-testid="adults"
+          type="int"
+          error={formErrors.adult}
           onChange={handleChangeAdult}
           value={adult}
         />
-        <br />
         <p className="errors">{formErrors.adult}</p>
-        {/* {state.adults} */}
-      </div>
-      <div>
-        <label htmlFor="children" className="labels">
-          Children
-        </label>
-        <input
-          id="children"
+      </Grid>
+      <Grid item xs={1} sm={4}>
+        <TextField
+          required
+          fullWidth
+          data-testid="children"
+          label="Children"
           type="int"
-          className="boxes"
           onChange={handleChangeChildren}
           value={children}
         />
-        <br />
-        {/* {state.children} */}
-      </div>
-    </div>
+      </Grid>
+    </ThemeProvider>
   );
 }
 export default Guests;
