@@ -108,13 +108,13 @@ export default function Form() {
           parseInt(adult) + parseInt(children)
         }`}
         state={
-          (dest,
+          [dest,
           startDate.toISOString().split("T")[0],
           endDate.toISOString().split("T")[0],
           lang,
           currency,
           adult,
-          children)
+          children]
         }
       />
     );

@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios'
-import List from './list.js'
+import List from './list.js';
+import { useLocation, useNavigate, Navigate } from "react-router-dom";
 
 
 function sort_data(data){
@@ -29,21 +30,33 @@ function Load_data() {
   const [completed, setCompleted] = useState(false)
   const [lengthOfHotel, setLength] = useState(0);
   const [badReq, setBadReq] = useState(false);
+  const [hotels, setHotels] = useState([]);
 
+  const location = useLocation();
 
-  let search = window.location.search;
-  let params = new URLSearchParams(search);
-  const dest_id = params.get('destination_id');
-  const checkin = params.get('checkin');
-  const checkout = params.get('checkout');
-  const lang = params.get('lang');
-  const currency = params.get('currency');
-  const guests = params.get("guests");
+  let dest_id = !location.state ? null : location.state[0];
+  let checkin = !location.state ? null : location.state[1];
+  let checkout = !location.state ? null : location.state[2];
+  let lang = !location.state ? null : location.state[3];
+  let currency = !location.state ? null : location.state[4];
+  let adult = !location.state ? null : location.state[5];
+  let children = !location.state ? null : location.state[6];
+  
+  console.log(location);
+  const navigate = useNavigate();
 
-  //console.log(dest_id, checkin, checkout, lang, currency, guests)
+    // checks if state is defined, if not it will redirect to error
+    useEffect(() => {
+      if (!location.state) {
+        <Navigate to ="/error"/>;
+      }
+    } , [])
 
-  const [link, setLink] = useState(`hotels/prices?destination_id=${dest_id}&checkin=${checkin}&checkout=${checkout}&lang=${lang}&currency=${currency}&landing_page=&partner_id=16&country_code=SG&guests=${guests}`);
-  const [Hotellink, setHotelLink] = useState(`hotels?destination_id=${dest_id}`);
+    const guests = parseInt(adult)+parseInt(children);
+    const [link, setLink] = useState(`hotels/prices?destination_id=${dest_id}&checkin=${checkin}&checkout=${checkout}&lang=${lang}&currency=${currency}&landing_page=&partner_id=16&country_code=SG&guests=${guests}`);
+    const [Hotellink, setHotelLink] = useState(`hotels?destination_id=${dest_id}`);
+
+  console.log(dest_id, checkin, checkout, lang, currency, guests)
 
   useEffect(() => {
     let link = `hotels/prices?destination_id=${dest_id}&checkin=${checkin}&checkout=${checkout}&lang=${lang}&currency=${currency}&landing_page=&partner_id=16&country_code=SG&guests=${guests}`
@@ -71,7 +84,7 @@ function Load_data() {
     
   },[link, completed, prices, lengthOfHotel, badReq])
 
-  const [hotels, setHotels] = useState([])
+  
   useEffect(() => {
     //let link = "hotels?destination_id=WD0M"
     //let link = `hotels?destination_id=${dest_id}`
@@ -84,7 +97,7 @@ function Load_data() {
   let new_data = useCallback(() => {return [sorted_data,completed,lengthOfHotel,badReq]},[sorted_data,completed,lengthOfHotel,badReq])
   return (
     <div>
-      <List data = {new_data} object_input_data = {{dest_id, checkin, checkout, lang, currency, guests}}/>
+      <List data = {new_data} object_input_data = {[dest_id, checkin, checkout, lang, currency, guests]}/>
     </div>
   );
 }

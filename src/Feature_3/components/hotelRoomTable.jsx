@@ -5,7 +5,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 const HotelRoomTable = ({ room_data, booking_details }) => {
   const { hotel_id, dest_id, checkin, checkout, lang, currency, guests } =
-    booking_details;
+    booking_details[0];
+    const hotel_name = booking_details[1];
+    console.log(hotel_name)
 
   return (
     <table class="table table-bordered">
@@ -38,6 +40,8 @@ const HotelRoomTable = ({ room_data, booking_details }) => {
                   lang,
                   currency,
                   guests,
+                  room.description,
+                  hotel_name
                 ]}
               >
                 Book

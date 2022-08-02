@@ -7,8 +7,8 @@ import {Link} from "react-router-dom"
 
 
 function List(props) {
-
   let getHotelData = props.data;
+  const [dest_id, checkin, checkout, lang, currency, guests] = props.object_input_data;
   let data = []; 
   data = getHotelData()[0];
   const completed = getHotelData()[1]
@@ -19,14 +19,14 @@ function List(props) {
   const [itemOffset, setItemOffset] = useState(0);
 
 
-  let search = window.location.search;
-  let params = new URLSearchParams(search);
-  const dest_id = params.get('destination_id');
-  const checkin = params.get('checkin');
-  const checkout = params.get('checkout');
-  const lang = params.get('lang');
-  const currency = params.get('currency');
-  const guests = params.get("guests");
+  // let search = window.location.search;
+  // let params = new URLSearchParams(search);
+  // const dest_id = params.get('destination_id');
+  // const checkin = params.get('checkin');
+  // const checkout = params.get('checkout');
+  // const lang = params.get('lang');
+  // const currency = params.get('currency');
+  // const guests = params.get("guests");
 
   const itemsPerPage = 5;
 
@@ -65,7 +65,9 @@ function List(props) {
                 <p>Address: {hotel.address}</p>
                 <p>Price: {hotel.price}</p>
                 <div>
-                <Link to={`/hotel?hotel_id=${hotel.id}&destination_id=${dest_id}&checkin=${checkin}&checkout=${checkout}&lang=en_US&currency=${currency}&guests=${guests}`}>Select for Booking!</Link>
+                <Link to={`/hotel?hotel_id=${hotel.id}&destination_id=${dest_id}&checkin=${checkin}&checkout=${checkout}&lang=en_US&currency=${currency}&guests=${guests}`}
+                state = {[hotel.id, dest_id, checkin, checkout, currency, guests]}
+                >Select for Booking!</Link>
                 </div>
               </div>
               );
@@ -91,7 +93,7 @@ function List(props) {
           <Spinner animation="border" role="status"></Spinner>
           </div> :
         //(badReq === false) ? <div><p>There are no hotels currently available, please try another entry.</p></div> : null
-        (badReq === true) ? <div><p>An error has occurred due to your inputs, please try another entry.</p></div> : null
+        (badReq === true) ? <div><p>An error has occurred due to your inputs, please try another entry.</p> <Link to = "/">Please re-start your booking via the following link</Link> </div> : null
         
     }   
     </>

@@ -168,6 +168,8 @@ export default function FormPage() {
         lang,
         currency,
         guests,
+        description,
+        name
     ] = location.state;
 
     // Calculate the number of nights with the checkin, checkout information
@@ -190,7 +192,9 @@ export default function FormPage() {
         lang,
         currency,
         guests,
-        nights
+        nights,
+        description,
+        name
     );
 
     // let search = window.location.search;
@@ -225,8 +229,14 @@ export default function FormPage() {
                         <Form.Label>
                             <ListGroup variant="flush">
                                 <ListGroup.Item>
-                                    <Row className="p-2">Hotel Name</Row>
-                                    <Row className="p-2">Room Type</Row>
+                                    <Row className="p-2">
+                                    <Col xl={7}>Hotel Name:</Col>
+                                        <Col>{name}</Col>
+                                    </Row>
+                                    <Row className="p-2">
+                                    <Col xl={7}>Room Type:</Col>
+                                        <Col>{description}</Col>
+                                    </Row>
                                     <Row className="p-2">
                                         <Col xl={7}>Number of guests:</Col>
                                         <Col>{guests}</Col>
