@@ -10,19 +10,24 @@ const Map = ({ latitude, longitude, name, address }) => {
   const position = [latitude, longitude];
 
   return (
-    <MapContainer center={position} zoom={20} scrollWheelZoom={false}>
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      <Marker position={position}>
-        <Popup>
-          {name}
-          <br />
-          {address}
-        </Popup>
-      </Marker>
-    </MapContainer>
+    <div>
+      <h3>Map</h3>
+      <div class="d-flex justify-content-center">
+        <MapContainer center={position} zoom={20} scrollWheelZoom={false}>
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          <Marker position={position}>
+            <Popup>
+              {name}
+              <br />
+              {address}
+            </Popup>
+          </Marker>
+        </MapContainer>
+      </div>
+    </div>
   );
 };
 

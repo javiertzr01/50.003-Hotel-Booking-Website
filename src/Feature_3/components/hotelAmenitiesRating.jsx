@@ -1,12 +1,10 @@
 import React from "react";
 
 const AmenitiesRatings = ({ amenities_ratings }) => {
-  if (!amenities_ratings) {
-    return <p>No amenities ratings available.</p>;
-  }
-  return (
-    <div>
-      <h3>Amenities Ratings</h3>
+  const amenities_ratings_desc =
+    amenities_ratings.length === 0 ? (
+      <p>No amenities ratings available.</p>
+    ) : (
       <ul>
         {amenities_ratings.map((amenity) => (
           <li key={amenity.name}>
@@ -14,6 +12,12 @@ const AmenitiesRatings = ({ amenities_ratings }) => {
           </li>
         ))}
       </ul>
+    );
+
+  return (
+    <div>
+      <h3>Amenities Ratings</h3>
+      {amenities_ratings_desc}
     </div>
   );
 };

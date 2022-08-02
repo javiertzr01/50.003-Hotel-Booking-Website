@@ -1,27 +1,32 @@
 import React from "react";
 import HotelRoomPicture from "./hotelRoomPicture";
 import { Link } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.min.css";
 
 const HotelRoomTable = ({ room_data, booking_details }) => {
   const { hotel_id, dest_id, checkin, checkout, lang, currency, guests } =
     booking_details[0];
-    const hotel_name = booking_details[1];
-    console.log(hotel_name)
+  const hotel_name = booking_details[1];
+  console.log(hotel_name);
 
   return (
-    <table class="table table-bordered">
-      <thead class="table-light">
-        <tr>
-          <th>Room</th>
-          <th>Description</th>
+    <table className="table table-bordered">
+      <thead className="table-light">
+        <tr className="d-flex">
+          <th className="col-4">Room</th>
+          <th className="col-8">Description</th>
         </tr>
       </thead>
       <tbody>
         {room_data.rooms.map((room) => (
-          <tr key={room.key}>
-            <td>
-              <b>{room.description}</b>
+          <tr key={room.key} className="d-flex">
+            <td className="col-4">
+              <b>
+                {room.description ? (
+                  room.description
+                ) : (
+                  <p>No description available.</p>
+                )}
+              </b>
               <br />
               {`${room.price} ${currency}`}
               <br />
@@ -29,7 +34,7 @@ const HotelRoomTable = ({ room_data, booking_details }) => {
               <br />
               <br />
               <Link
-                class="btn btn-primary btn-lg"
+                className="btn btn-primary btn-lg"
                 to={`/submission?hotel_id=${hotel_id}&destination_id=${dest_id}&checkin=${checkin}&checkout=${checkout}&lang=${lang}&currency=${currency}&guests=${guests}&key=${room.key}`}
                 state={[
                   room.price,
@@ -41,15 +46,19 @@ const HotelRoomTable = ({ room_data, booking_details }) => {
                   currency,
                   guests,
                   room.description,
-                  hotel_name
+                  hotel_name,
                 ]}
               >
                 Book
               </Link>
             </td>
             <td
-              class="text-start"
-              dangerouslySetInnerHTML={{ __html: room.long_description }}
+              className="text-start col-8"
+              dangerouslySetInnerHTML={{
+                __html: room.long_description
+                  ? room.long_description
+                  : "<p>No description available.</p>",
+              }}
             />
           </tr>
         ))}
