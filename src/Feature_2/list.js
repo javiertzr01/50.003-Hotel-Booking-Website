@@ -13,16 +13,11 @@ function List(props) {
   data = getHotelData()[0];
   const completed = getHotelData()[1]
   const lengthOfHotel = getHotelData()[2]
-  const [badReq, setbadReq] = useState(getHotelData()[3])
+  const badReq = getHotelData()[3]
   const [currentItems, setCurrentItems] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
 
-  useEffect(() => {
-    setbadReq(getHotelData()[3])
-  }, [badReq])
-  
-  console.log(badReq);
 
   let search = window.location.search;
   let params = new URLSearchParams(search);
@@ -34,6 +29,10 @@ function List(props) {
   const guests = params.get("guests");
 
   const itemsPerPage = 5;
+
+  useEffect(() => {
+    console.log(badReq);
+  }, [badReq])
 
   useEffect(() => {
       const calculateEndOffset = () => {return itemOffset + itemsPerPage};
@@ -86,12 +85,14 @@ function List(props) {
             activeClassName={"active"}
           />
         </div> : 
-        //(completed === true && lengthOfHotel === 0 && badReq === false) ? <div><p>There are no hotels currently available, please refresh again or try another entry.</p></div> :
-        (badReq === false) ? <div>
+        (completed === true && lengthOfHotel === 0 && badReq === false) ? <div><p>There are no hotels currently available, please refresh again or try another entry.</p></div> :
+        (completed === false && badReq === false) ? <div>
           <div>loading...</div>
           <Spinner animation="border" role="status"></Spinner>
           </div> :
-        (badReq === true) ? <div><p>There are no hotels currently available for this entry, please try another entry.</p></div> : null
+        //(badReq === false) ? <div><p>There are no hotels currently available, please try another entry.</p></div> : null
+        (badReq === true) ? <div><p>An error has occurred due to your inputs, please try another entry.</p></div> : null
+        
     }   
     </>
   );
