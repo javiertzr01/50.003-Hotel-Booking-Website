@@ -101,20 +101,6 @@ const schema = yup.object().shape({
     billingCountry: yup.string().required("Please choose a country"),
 });
 
-
-// function sortData(key,arr){
-//     let price = false;
-//     for (let i = 0; i < arr.length; i++){
-//         console.log(arr[i].key)
-//         if (arr[i].key.localeCompare(key)){
-//             console.log(key)
-//             price = arr[i].price;
-//             break;
-//         }
-//     }
-//     return price;
-// }
-
 export default function FormPage() {
     // Function to Encrypt PII data
     function encrypt(data) {
@@ -196,28 +182,6 @@ export default function FormPage() {
         description,
         name
     );
-
-    // let search = window.location.search;
-    // let params = new URLSearchParams(search);
-    // const [hotel_id, setHotelID] = useState(params.get('hotel_id'));
-    // const [dest_id, setDestID] = useState(params.get('destination_id'));
-    // const [checkin, setCheckinDate] = useState(params.get('checkin'));
-    // const [checkout, setCheckoutDate] = useState(params.get('checkout'));
-    // const [lang, setLang] = useState(params.get('lang'));
-    // const [currency, setCurrency] = useState(params.get('currency'));
-    // const [guests, setGuests] = useState(params.get("guests"));
-    // const [key, setKey] = useState(params.get('key'));
-
-    // useEffect(() => {
-    //     setHotelID(params.get('hotel_id'));
-    //     setDestID(params.get('destination_id'));
-    //     setCheckinDate(params.get('checkin'));
-    //     setCheckoutDate(params.get('checkout'));
-    //     setLang(params.get('lang'));
-    //     setCurrency(params.get('currency'));
-    //     setGuests(params.get("guests"));
-    //     setKey(params.get('key'))
-    // }, [/*only once to refresh - prevents changing of any data input in feature 3*/])
 
     return (
         <Container>
@@ -314,7 +278,7 @@ export default function FormPage() {
                                     end: checkout,
                                     guests: guests,
                                     message: values.guestSpecialReq,
-                                    roomType: "tbd",
+                                    roomType: description,
                                 },
                                 currency: currency,
                                 price: price,
@@ -325,7 +289,7 @@ export default function FormPage() {
                                     termsCond: "tbd",
                                     hotelTermsCond: "tbd",
                                 },
-                                bookingRef: "tbd",
+                                bookingRef: "Changed with addReceipt function",
                                 guestInfo: encrypt(guest),
                                 payeeInfo: encrypt(payee),
                             };
@@ -634,45 +598,6 @@ export default function FormPage() {
                                                 </Form.Label>
                                             </Row>
                                             <Row>
-                                                {/* <Form.Label column sm="2">
-                                                    <Image src={logo} thumbnail="true" sm="auto"/>
-                                                </Form.Label>
-                                                <Col sm="10">
-                                                    <Form.Control
-                                                        type="text"
-                                                        aria-label="cardNumber"
-                                                        // pattern="\d*"
-                                                        maxLength={valid.number(formik.values.cardNumber).card? valid.number(formik.values.cardNumber).card.lengths.at(-1): 16}
-                                                        {...formik.getFieldProps(
-                                                            "cardNumber"
-                                                        )}
-                                                        onChange={(e) => {
-                                                            onNumberChange(
-                                                                e,
-                                                                formik
-                                                            );
-                                                        }}
-                                                        isInvalid={
-                                                            formik.touched
-                                                                .cardNumber &&
-                                                            !!formik.errors
-                                                                .cardNumber
-                                                        }
-                                                    />
-                                                    <ErrorMessage
-                                                        name="cardNumber"
-                                                        render={(
-                                                            errorMessage
-                                                        ) => (
-                                                            <Form.Control.Feedback
-                                                                type="invalid"
-                                                                aria-label="cardNumberError"
-                                                            >
-                                                                {errorMessage}
-                                                            </Form.Control.Feedback>
-                                                        )}
-                                                    />
-                                                </Col> */}
                                                 <PaymentInputsWrapper
                                                     {...wrapperProps}
                                                     styles={{
