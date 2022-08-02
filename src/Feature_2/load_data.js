@@ -26,7 +26,7 @@ function Load_data() {
 
   //add prop here when needed 
   const [prices, setPrices] = useState([])
-  const [completed, setCompleted] = useState(true)
+  const [completed, setCompleted] = useState(false)
   const [lengthOfHotel, setLength] = useState(0);
   const [badReq, setBadReq] = useState(false);
 
@@ -65,10 +65,11 @@ function Load_data() {
         setPrices(response.data.hotels); 
         setCompleted(response.data.completed); 
         setLength(response.data.hotels.length)}).catch(response => {
+          console.log(response)
           setBadReq(true);
         });
     
-  },[link, completed, prices])
+  },[link, completed, prices, lengthOfHotel, badReq])
 
   const [hotels, setHotels] = useState([])
   useEffect(() => {
