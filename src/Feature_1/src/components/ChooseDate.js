@@ -21,7 +21,7 @@ function ChooseDate(props) {
   };
 
   return (
-    <div>
+    <div data-testid="stayPeriod">
       <p>Please enter stay period:</p>
       <DatePicker
         className="datepicker"
