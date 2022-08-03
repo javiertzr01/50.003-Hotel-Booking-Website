@@ -137,8 +137,7 @@ export default function FormPage() {
     }
 
     // Card Validation const
-    const { getCardImageProps, getCardNumberProps, wrapperProps } =
-        usePaymentInputs();
+    const { getCardImageProps, getCardNumberProps, wrapperProps } = usePaymentInputs();
 
     // Receiving Routed Information
     const location = useLocation();
@@ -341,10 +340,7 @@ export default function FormPage() {
                                                     "guestSalutation"
                                                 )}
                                             >
-                                                <option
-                                                    value=""
-                                                    disabled
-                                                ></option>
+                                                <option value=""></option>
                                                 <option value="mr">Mr</option>
                                                 <option value="mrs">Mrs</option>
                                                 <option value="ms">Ms</option>
@@ -433,6 +429,7 @@ export default function FormPage() {
                                             <Form.Control
                                                 as={PhoneNumberInput}
                                                 name="guestHpNum"
+                                                aria-label="guestHpNum"
                                                 formik={formik}
                                                 isInvalid={
                                                     formik.touched.test &&
@@ -641,22 +638,7 @@ export default function FormPage() {
                                                                             .values
                                                                             .cardNumber
                                                                     ).card
-                                                                        ? valid
-                                                                              .number(
-                                                                                  formik
-                                                                                      .values
-                                                                                      .cardNumber
-                                                                              )
-                                                                              .card.lengths.at(
-                                                                                  -1
-                                                                              ) +
-                                                                          valid.number(
-                                                                              formik
-                                                                                  .values
-                                                                                  .cardNumber
-                                                                          ).card
-                                                                              .gaps
-                                                                              .size
+                                                                        ? valid.number(formik.values.cardNumber).card.lengths.at(-1) +valid.number(formik.values.cardNumber).card.gaps.size
                                                                         : 16
                                                                 }
                                                             />
