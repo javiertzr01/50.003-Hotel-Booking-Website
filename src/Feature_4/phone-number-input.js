@@ -6,6 +6,7 @@ const PhoneNumberInput = ({ onChange, formik, ...props }) => {
     const [field] = useField(props);
     return (
         <PhoneInput
+            aria-label="guestHpNum"
             international
             {...field}
             onChange={(e) => {

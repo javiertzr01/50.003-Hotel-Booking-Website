@@ -168,19 +168,19 @@ export default function FormPage() {
 
     const nights = calculateNights(checkin, checkout);
 
-    console.log(
-        price,
-        hotel_id,
-        dest_id,
-        checkin,
-        checkout,
-        lang,
-        currency,
-        guests,
-        nights,
-        description,
-        name
-    );
+    // console.log(
+    //     price,
+    //     hotel_id,
+    //     dest_id,
+    //     checkin,
+    //     checkout,
+    //     lang,
+    //     currency,
+    //     guests,
+    //     nights,
+    //     description,
+    //     name
+    // );
 
     return (
         <Container>
@@ -429,7 +429,6 @@ export default function FormPage() {
                                             <Form.Control
                                                 as={PhoneNumberInput}
                                                 name="guestHpNum"
-                                                aria-label="guestHpNum"
                                                 formik={formik}
                                                 isInvalid={
                                                     formik.touched.test &&
