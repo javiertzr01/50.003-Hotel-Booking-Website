@@ -17,6 +17,32 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 const theme = createTheme();
 
+function createGuestRoomStr(room,guests){
+  let guest_string = guests.toString();
+  
+  //null error handling
+  if (!room || !guests){
+    return 
+  }
+
+  if (room === 1) {
+    return guest_string;
+  }
+  else {
+    for(let i = 1; i < room; i++){
+      try {
+        guest_string = guest_string + "|" + guests.toString()
+      } catch (error) {
+        if (error instanceof RangeError) {
+          guest_string = null;
+          break;
+        }
+    } 
+    return guest_string;
+    }
+  }
+}
+
 export default function Form() {
   const [errors, setError] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -38,6 +64,7 @@ export default function Form() {
   const formValues = { dest, adult, children, room, startDate, endDate };
   const currency = "SGD";
   const lang = "en_US";
+  const guests = parseInt(adult)+parseInt(children);
 
   useEffect(() => {
     console.log(formErrors);
@@ -105,7 +132,7 @@ export default function Form() {
         }&checkout=${
           endDate ? endDate.toISOString().split("T")[0] : ""
         }&lang=${lang}&currency=${currency}&guests=${
-          parseInt(adult) + parseInt(children)
+          createGuestRoomStr(room,guests)
         }`}
         state={
           [dest,
@@ -114,7 +141,8 @@ export default function Form() {
           lang,
           currency,
           adult,
-          children]
+          children,
+          room]
         }
       />
     );

@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import ReactPaginate from 'react-paginate';
 import Placeholder from 'react-bootstrap/Placeholder';
 import Spinner from 'react-bootstrap/Spinner';
@@ -6,29 +6,64 @@ import './List.css'
 import {Link} from "react-router-dom"
 
 
+function createGuestRoomStr(room,guests){
+  let guest_string = guests.toString();
+  
+  //null error handling
+  if (!room || !guests){
+    return 
+  }
+
+  if (room === 1) {
+    return guest_string;
+  }
+  else {
+    for(let i = 1; i < room; i++){
+      try {
+        guest_string = guest_string + "|" + guests.toString()
+      } catch (error) {
+        if (error instanceof RangeError) {
+          guest_string = null;
+          break;
+        }
+    } 
+    return guest_string;
+    }
+  }
+}
+function getHotelDataFromCallback(data, num){
+  return data[num]
+}
+
+
 function List(props) {
-  let getHotelData = props.data;
-  const [dest_id, checkin, checkout, lang, currency, guests] = props.object_input_data;
-  let data = []; 
-  data = getHotelData()[0];
-  const completed = getHotelData()[1]
-  const lengthOfHotel = getHotelData()[2]
-  const badReq = getHotelData()[3]
+  let getHotelData = (props.data)();
+  const [dest_id, checkin, checkout, lang, currency, adult, children, room] = props.object_input_data;
+  let data = useMemo(() => getHotelDataFromCallback(getHotelData, 0), [getHotelData]);
+  const completed = getHotelData[1]
+  const searchComplete = getHotelData[2]
+  const lengthOfHotel = getHotelData[3]
+  const badReq = getHotelData[4]
   const [currentItems, setCurrentItems] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
-
-
-  // let search = window.location.search;
-  // let params = new URLSearchParams(search);
-  // const dest_id = params.get('destination_id');
-  // const checkin = params.get('checkin');
-  // const checkout = params.get('checkout');
-  // const lang = params.get('lang');
-  // const currency = params.get('currency');
-  // const guests = params.get("guests");
+  const [timeout, setTimer] = useState(false);
+  const guests = parseInt(adult) + parseInt(children);
+  const guest_str = createGuestRoomStr(room,guests);
+  console.log("loaded alr");
 
   const itemsPerPage = 5;
+
+  //create timer 
+  useEffect(() => {
+    if (!lengthOfHotel) {
+      setTimeout(() => {
+        setTimer(true);
+    }, 10000);
+    }
+  }, [])
+
+  console.log(timeout);
 
   useEffect(() => {
     console.log(badReq);
@@ -56,45 +91,49 @@ function List(props) {
 
   return (
     <>
-    {(lengthOfHotel !== 0 && completed === true) ?  
-        <div>
-        <div>{currentItems.map(hotel => {
-            return (
-              <div key={hotel.id} className='border'>
-                <p>Name: {hotel.name}</p>
-                <p>Address: {hotel.address}</p>
-                <p>Price: {hotel.price}</p>
-                <div>
-                <Link to={`/hotel?hotel_id=${hotel.id}&destination_id=${dest_id}&checkin=${checkin}&checkout=${checkout}&lang=en_US&currency=${currency}&guests=${guests}`}
-                state = {[hotel.id, dest_id, checkin, checkout, currency, guests]}
-                >Select for Booking!</Link>
-                </div>
-              </div>
-              );
-            })
-          }
-        </div>
-        <ReactPaginate
-            breakLabel="..."
-            nextLabel="next >"
-            onPageChange={handlePageClick}
-            pageRangeDisplayed={5}
-            pageCount={pageCount}
-            previousLabel="< previous"
-            renderOnZeroPageCount={null}
-            containerClassName={"pagination"}
-            subContainerClassName={"pages pagination"}
-            activeClassName={"active"}
-          />
-        </div> : 
-        (completed === true && lengthOfHotel === 0 && badReq === false) ? <div><p>There are no hotels currently available, please refresh again or try another entry.</p></div> :
-        (completed === false && badReq === false) ? <div>
-          <div>loading...</div>
-          <Spinner animation="border" role="status"></Spinner>
-          </div> :
-        //(badReq === false) ? <div><p>There are no hotels currently available, please try another entry.</p></div> : null
-        (badReq === true) ? <div><p>An error has occurred due to your inputs, please try another entry.</p> <Link to = "/">Please re-start your booking via the following link</Link> </div> : null
-        
+    {
+    ( timeout == false && badReq === false && lengthOfHotel === 0) ? 
+    <div>
+      <div>loading...</div>
+      <Spinner animation="border" role="status"></Spinner>
+    </div> :
+    (timeout == true && lengthOfHotel == 0 && badReq === false) ? 
+    <div>
+      <p>There are no hotels currently available, please refresh again or try another entry.</p> 
+      <Link to = "/">Please re-start your booking via the following link</Link>
+    </div> :
+    (lengthOfHotel !== 0 && badReq === false) ?  
+    <div>
+    <div>{currentItems.map(hotel => {
+        return (
+          <div key={hotel.id} className='border'>
+            <p>Name: {hotel.name}</p>
+            <p>Address: {hotel.address}</p>
+            <p>Price: {hotel.price}</p>
+            <div>
+            <Link to={`/hotel?hotel_id=${hotel.id}&destination_id=${dest_id}&checkin=${checkin}&checkout=${checkout}&lang=en_US&currency=${currency}&guests=${guest_str}`}
+            state = {[hotel.id, dest_id, checkin, checkout, currency, adult, children, room]}
+            >Select for Booking!</Link>
+            </div>
+          </div>
+          );
+        })
+      }
+    </div>
+    <ReactPaginate
+        breakLabel="..."
+        nextLabel="next >"
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={5}
+        pageCount={pageCount}
+        previousLabel="< previous"
+        renderOnZeroPageCount={null}
+        containerClassName={"pagination"}
+        subContainerClassName={"pages pagination"}
+        activeClassName={"active"}
+      />
+    </div> : 
+      (badReq === true) ? <div><p>An error has occurred due to your inputs, please try another entry.</p> <Link to = "/">Please re-start your booking via the following link</Link> </div> : null
     }   
     </>
   );

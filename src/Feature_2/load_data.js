@@ -1,10 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import axios from 'axios'
 import List from './list.js';
-import { useLocation, useNavigate, Navigate } from "react-router-dom";
+import { useLocation, Navigate } from "react-router-dom";
 
 
 function sort_data(data){
+  if (!data[0] || !data[1]){
+    return
+  }
   //data[0] is prices, data[1] is hotels
   let prices = data[0];
   let hotels = data[1];
@@ -23,12 +25,38 @@ function sort_data(data){
     return final;
   }
 
-function Load_data() {
+  function createGuestRoomStr(room,guests){
+    let guest_string = guests.toString();
+    
+    //null error handling
+    if (!room || !guests){
+      return 
+    }
+  
+    if (room === 1) {
+      return guest_string;
+    }
+    else {
+      for(let i = 1; i < room; i++){
+        try {
+          guest_string = guest_string + "|" + guests.toString()
+        } catch (error) {
+          if (error instanceof RangeError) {
+            guest_string = null;
+            break;
+          }
+      } 
+      return guest_string;
+      }
+    }
+  }
 
+function Load_data() {
   //add prop here when needed 
   const [prices, setPrices] = useState([])
   const [completed, setCompleted] = useState(false)
   const [lengthOfHotel, setLength] = useState(0);
+  const [searchComplete, setsearchComplete] = useState(false);
   const [badReq, setBadReq] = useState(false);
   const [hotels, setHotels] = useState([]);
 
@@ -41,124 +69,79 @@ function Load_data() {
   let currency = !location.state ? null : location.state[4];
   let adult = !location.state ? null : location.state[5];
   let children = !location.state ? null : location.state[6];
+  let room = !location.state ? null : location.state[7];
   
-  //console.log(location);
-  const navigate = useNavigate();
-
     // checks if state is defined, if not it will redirect to error
     useEffect(() => {
       if (!location.state) {
         <Navigate to ="/error"/>;
       }
-    } , [])
+    } , [location.state])
 
     const guests = parseInt(adult)+parseInt(children);
-    const [link, setLink] = useState(`hotels/prices?destination_id=${dest_id}&checkin=${checkin}&checkout=${checkout}&lang=${lang}&currency=${currency}&landing_page=&partner_id=16&country_code=SG&guests=${guests}`);
+    const [link, setLink] = useState(`hotels/prices?destination_id=${dest_id}&checkin=${checkin}&checkout=${checkout}&lang=${lang}&currency=${currency}&landing_page=&partner_id=16&country_code=SG&guests=${createGuestRoomStr(room,guests)}`);
     const [Hotellink, setHotelLink] = useState(`hotels?destination_id=${dest_id}`);
 
   //console.log(dest_id, checkin, checkout, lang, currency, guests)
 
   useEffect(() => {
-    let link = `hotels/prices?destination_id=${dest_id}&checkin=${checkin}&checkout=${checkout}&lang=${lang}&currency=${currency}&landing_page=&partner_id=16&country_code=SG&guests=${guests}`
+    let link = `hotels/prices?destination_id=${dest_id}&checkin=${checkin}&checkout=${checkout}&lang=${lang}&currency=${currency}&landing_page=&partner_id=16&country_code=SG&guests=${createGuestRoomStr(room,guests)}`
     setLink(link)
-  }, [dest_id, checkin, checkout, lang, currency, guests])
+  }, [])
 
   useEffect(() => {
     let link = `hotels?destination_id=${dest_id}`;
     setHotelLink(link)
-  }, [dest_id])
+  }, [])
 
   useEffect(() => {
     const axios = require('axios');
-    const CancelToken = axios.CancelToken;
-    const source = CancelToken.source();
-
-    const sendGetRequest = async () => {
-      try {
-          const response = await axios.get(Hotellink);
-          //console.log(response.data);
-          setHotels(response.data)
-          console.log("hotel stuff loading");
-        } catch (err) {
-
-      }
-  };
-
-    sendGetRequest();
-
-    return () => source.cancel();
-  }, [Hotellink, completed, hotels])
+    //parameters to try for true and array.length == 0 : 2023-08-01
+    //parameters to try for false and array.length == 0 : 2018-08-01
+    //let link = "https://hotelapi.loyalty.dev/api/hotels/prices?destination_id=WD0M&checkin=2022-07-31&checkout=2022-08-01&lang=en_US&currency=SGD&landing_page=&partner_id=16&country_code=SG&guests=1"
+    //let link = `hotels/prices?destination_id=${dest_id}&checkin=${checkin}&checkout=${checkout}&lang=${lang}&currency=${currency}&landing_page=&partner_id=16&country_code=SG&guests=${guests}`
+    axios.get(Hotellink).then(response => {
+      setHotels(response.data);
+    })
+      .catch(response => {
+      console.log("error from hotel API");
+    });
+  },[Hotellink])
 
   useEffect(() => {
+    let counter = 0;
     const axios = require('axios');
-    const CancelToken = axios.CancelToken;
-    const source = CancelToken.source();
-    
     const sendGetRequest = async () => {
         try {
             const response = await axios.get(link);
-            //console.log(response.data);
+            console.log(response.data);
             setPrices(response.data.hotels); 
             setCompleted(response.data.completed); 
             setLength(response.data.hotels.length);
             console.log("calling data...");
         } catch (err) {
             // Handle Error Here
+            console.log("error from price API")
             setBadReq(true);
         }
     };
-    sendGetRequest();
-
-    return () => source.cancel();
-  }, [link, completed, prices, lengthOfHotel, badReq])
-
-  // useEffect(() => {
-  //   //parameters to try for true and array.length == 0 : 2023-08-01
-  //   //parameters to try for false and array.length == 0 : 2018-08-01
-  //   //let original_link = "https://hotelapi.loyalty.dev/api/hotels/prices?destination_id=WD0M&checkin=2022-07-31&checkout=2022-08-01&lang=en_US&currency=SGD&landing_page=&partner_id=16&country_code=SG&guests=1"
-  //   //let link = `hotels/prices?destination_id=${dest_id}&checkin=${checkin}&checkout=${checkout}&lang=${lang}&currency=${currency}&landing_page=&partner_id=16&country_code=SG&guests=${guests}`
-  //   const axios = require('axios');
-  //   const sendGetRequest = async () => {
-  //       try {
-  //           const response = await axios.get(link);
-  //           //console.log(response.data);
-  //           setPrices(response.data.hotels); 
-  //           setCompleted(response.data.completed); 
-  //           setLength(response.data.hotels.length);
-  //           console.log("calling data...");
-  //       } catch (err) {
-  //           // Handle Error Here
-  //           setBadReq(true);
-  //       }
-  //   };
-  //   sendGetRequest();
-  // },[link, completed, prices, lengthOfHotel, badReq])
-
-
-  // useEffect(() => {
-    //let link = "hotels?destination_id=WD0M"
-    //let link = `hotels?destination_id=${dest_id}`
-  //   const sendGetRequest = async () => {
-  //     try {
-  //         const response = await axios.get(Hotellink);
-  //         //console.log(response.data);
-  //         setHotels(response.data)
-  //         console.log("hotel stuff loading");
-  //     } catch (err) {
-  //     }
-  // };
-    // const data = axios.get(Hotellink).then(response => {setHotels(response.data)})
-    // console.log("hotel stuuff loading"); 
-  //   sendGetRequest();
-  
-  // },[Hotellink, completed, hotels])
+    while (counter < 5){
+      sendGetRequest();
+      counter++;
+    }
+    return () =>{
+      console.log("unmounting price API");
+      //source.cancel();
+    } 
+  }, [link /*completed, prices, lengthOfHotel, badReq*/])
   
   //edit callback to prevent rendering
+  console.log(prices,hotels)
   let sorted_data = sort_data([prices,hotels]);
-  let new_data = useCallback(() => {return [sorted_data,completed,lengthOfHotel,badReq]},[sorted_data,completed,lengthOfHotel,badReq])
+  let new_data = useCallback(() => {return [sorted_data,completed,searchComplete,lengthOfHotel,badReq]},[sorted_data,completed,searchComplete,lengthOfHotel,badReq])
   return (
     <div>
-      <List data = {new_data} object_input_data = {[dest_id, checkin, checkout, lang, currency, guests]}/>
+      <List data = {new_data} object_input_data = {[dest_id, checkin, checkout, lang, currency, adult, children, room]}/>
     </div>
   );
 }
