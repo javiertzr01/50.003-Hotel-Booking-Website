@@ -42,7 +42,7 @@ function Load_data() {
   let adult = !location.state ? null : location.state[5];
   let children = !location.state ? null : location.state[6];
   
-  console.log(location);
+  //console.log(location);
   const navigate = useNavigate();
 
     // checks if state is defined, if not it will redirect to error
@@ -56,7 +56,7 @@ function Load_data() {
     const [link, setLink] = useState(`hotels/prices?destination_id=${dest_id}&checkin=${checkin}&checkout=${checkout}&lang=${lang}&currency=${currency}&landing_page=&partner_id=16&country_code=SG&guests=${guests}`);
     const [Hotellink, setHotelLink] = useState(`hotels?destination_id=${dest_id}`);
 
-  console.log(dest_id, checkin, checkout, lang, currency, guests)
+  //console.log(dest_id, checkin, checkout, lang, currency, guests)
 
   useEffect(() => {
     let link = `hotels/prices?destination_id=${dest_id}&checkin=${checkin}&checkout=${checkout}&lang=${lang}&currency=${currency}&landing_page=&partner_id=16&country_code=SG&guests=${guests}`
@@ -68,29 +68,90 @@ function Load_data() {
     setHotelLink(link)
   }, [dest_id])
 
+  useEffect(() => {
+    const axios = require('axios');
+    const CancelToken = axios.CancelToken;
+    const source = CancelToken.source();
+
+    const sendGetRequest = async () => {
+      try {
+          const response = await axios.get(Hotellink);
+          //console.log(response.data);
+          setHotels(response.data)
+          console.log("hotel stuff loading");
+        } catch (err) {
+
+      }
+  };
+
+    sendGetRequest();
+
+    return () => source.cancel();
+  }, [Hotellink, completed, hotels])
 
   useEffect(() => {
-    //parameters to try for true and array.length == 0 : 2023-08-01
-    //parameters to try for false and array.length == 0 : 2018-08-01
-    //let link = "https://hotelapi.loyalty.dev/api/hotels/prices?destination_id=WD0M&checkin=2022-07-31&checkout=2022-08-01&lang=en_US&currency=SGD&landing_page=&partner_id=16&country_code=SG&guests=1"
-    //let link = `hotels/prices?destination_id=${dest_id}&checkin=${checkin}&checkout=${checkout}&lang=${lang}&currency=${currency}&landing_page=&partner_id=16&country_code=SG&guests=${guests}`
-      const data = axios.get(link).then(response => { 
-        setPrices(response.data.hotels); 
-        setCompleted(response.data.completed); 
-        setLength(response.data.hotels.length)}).catch(response => {
-          console.log(response)
-          setBadReq(true);
-        });
+    const axios = require('axios');
+    const CancelToken = axios.CancelToken;
+    const source = CancelToken.source();
     
-  },[link, completed, prices, lengthOfHotel, badReq])
+    const sendGetRequest = async () => {
+        try {
+            const response = await axios.get(link);
+            //console.log(response.data);
+            setPrices(response.data.hotels); 
+            setCompleted(response.data.completed); 
+            setLength(response.data.hotels.length);
+            console.log("calling data...");
+        } catch (err) {
+            // Handle Error Here
+            setBadReq(true);
+        }
+    };
+    sendGetRequest();
 
-  
-  useEffect(() => {
+    return () => source.cancel();
+  }, [link, completed, prices, lengthOfHotel, badReq])
+
+  // useEffect(() => {
+  //   //parameters to try for true and array.length == 0 : 2023-08-01
+  //   //parameters to try for false and array.length == 0 : 2018-08-01
+  //   //let original_link = "https://hotelapi.loyalty.dev/api/hotels/prices?destination_id=WD0M&checkin=2022-07-31&checkout=2022-08-01&lang=en_US&currency=SGD&landing_page=&partner_id=16&country_code=SG&guests=1"
+  //   //let link = `hotels/prices?destination_id=${dest_id}&checkin=${checkin}&checkout=${checkout}&lang=${lang}&currency=${currency}&landing_page=&partner_id=16&country_code=SG&guests=${guests}`
+  //   const axios = require('axios');
+  //   const sendGetRequest = async () => {
+  //       try {
+  //           const response = await axios.get(link);
+  //           //console.log(response.data);
+  //           setPrices(response.data.hotels); 
+  //           setCompleted(response.data.completed); 
+  //           setLength(response.data.hotels.length);
+  //           console.log("calling data...");
+  //       } catch (err) {
+  //           // Handle Error Here
+  //           setBadReq(true);
+  //       }
+  //   };
+  //   sendGetRequest();
+  // },[link, completed, prices, lengthOfHotel, badReq])
+
+
+  // useEffect(() => {
     //let link = "hotels?destination_id=WD0M"
     //let link = `hotels?destination_id=${dest_id}`
-    const data = axios.get(Hotellink).then(response => {setHotels(response.data)})
-    
-  },[Hotellink, completed, hotels])
+  //   const sendGetRequest = async () => {
+  //     try {
+  //         const response = await axios.get(Hotellink);
+  //         //console.log(response.data);
+  //         setHotels(response.data)
+  //         console.log("hotel stuff loading");
+  //     } catch (err) {
+  //     }
+  // };
+    // const data = axios.get(Hotellink).then(response => {setHotels(response.data)})
+    // console.log("hotel stuuff loading"); 
+  //   sendGetRequest();
+  
+  // },[Hotellink, completed, hotels])
   
   //edit callback to prevent rendering
   let sorted_data = sort_data([prices,hotels]);
