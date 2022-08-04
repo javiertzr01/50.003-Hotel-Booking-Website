@@ -1180,7 +1180,7 @@ test("billingCountry non-empty input", async () => {
 });
 
 test("billingCountry empty input", async () => {
-        let history = createMemoryHistory();
+    let history = createMemoryHistory();
 
     const state = [
         "1000",
@@ -1207,4 +1207,60 @@ test("billingCountry empty input", async () => {
         const billingCountryError = await screen.findByLabelText("billingCountryError");
         expect(billingCountry).toHaveValue("");
         expect(billingCountryError).toBeInTheDocument();
+});
+
+// Functions
+// Calculate Nights function
+test("Test Calculate Nights function 2 nights", async()=>{
+    let history = createMemoryHistory();
+
+    const state = [
+        "1000",
+        "TeSt",
+        "TESTDES",
+        "2022-08-05",
+        "2022-08-07",
+        "ENG",
+        "SGD",
+        "2",
+        "Roomtype",
+        "cool Hotel",
+    ];
+
+    history.push("/submission", state);
+    render(
+        <Router navigator={history} location={history.location}>
+            <FormPage />
+        </Router>
+    );
+    const nights = screen.getByLabelText("nights");
+
+    expect(nights).toHaveTextContent(2);
+});
+
+test("Test Calculate Nights function 3 nights", async () => {
+    let history = createMemoryHistory();
+
+    const state = [
+        "1000",
+        "TeSt",
+        "TESTDES",
+        "2022-08-05",
+        "2022-08-08",
+        "ENG",
+        "SGD",
+        "2",
+        "Roomtype",
+        "cool Hotel",
+    ];
+
+    history.push("/submission", state);
+    render(
+        <Router navigator={history} location={history.location}>
+            <FormPage />
+        </Router>
+    );
+    const nights = screen.getByLabelText("nights");
+
+    expect(nights).toHaveTextContent(3);
 });

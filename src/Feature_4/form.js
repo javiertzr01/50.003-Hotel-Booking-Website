@@ -128,6 +128,11 @@ export default function FormPage() {
         await setDoc(bookingDoc, info);
     }
 
+    // Function to randomly generate alphanumeric string for IDs
+    function generateID(){
+        return Math.random().toString(36).slice(2);
+    }
+
     // Function to negate alphabetical input --> onChange
     async function onNumberChange(e, props) {
         const re = /^[0-9\b]+$/;
@@ -163,7 +168,7 @@ export default function FormPage() {
         var date2 = new Date(checkout);
         var timeDiff = Math.abs(date2.getTime() - date1.getTime());
         var numberOfNights = Math.ceil(timeDiff / (1000 * 3600 * 24));
-        return numberOfNights.toString();
+        return numberOfNights;
     }
 
     const nights = calculateNights(checkin, checkout);
@@ -208,15 +213,15 @@ export default function FormPage() {
                                 <ListGroup.Item>
                                     <Row className="p-2">
                                         <Col xl={7}>Check-in Date:</Col>
-                                        <Col>{checkin}</Col>
+                                        <Col aria-label="checkin">{checkin}</Col>
                                     </Row>
                                     <Row className="p-2">
                                         <Col xl={7}>Check-out Date: </Col>
-                                        <Col>{checkout}</Col>
+                                        <Col aria-label="checkout">{checkout}</Col>
                                     </Row>
                                     <Row className="p-2">
                                         <Col xl={7}>Number of nights:</Col>
-                                        <Col>{nights}</Col>
+                                        <Col aria-label="nights">{nights}</Col>
                                     </Row>
                                 </ListGroup.Item>
                                 <ListGroup.Item>
@@ -281,10 +286,10 @@ export default function FormPage() {
                                 },
                                 currency: currency,
                                 price: price,
-                                supplierBookingID: "tbd",
+                                supplierBookingID: generateID(),
                                 supplierResponse: {
-                                    cost: "tbd",
-                                    bookingRef: "tbd",
+                                    cost: price,
+                                    bookingRef: generateID(),
                                     termsCond: "tbd",
                                     hotelTermsCond: "tbd",
                                 },
