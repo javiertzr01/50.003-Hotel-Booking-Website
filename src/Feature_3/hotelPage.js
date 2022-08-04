@@ -1,5 +1,4 @@
-//Matthew's code
-import React from "react";
+import React, {useState, useEffect} from "react";
 import Header from "./components/hotelHeader";
 import Address from "./components/hotelAddress";
 import Rating from "./components/hotelRating";
@@ -13,9 +12,12 @@ import Spinner from 'react-bootstrap/Spinner';
 
 
 function HotelPage(props) {
-  const [ roomData, hotelData, bookingDetails, badReq, completed ] = props.data();
-  const { hotel_id, dest_id, checkin, checkout, lang, currency, guests } = bookingDetails;
-
+  const [ roomData, hotelData, bookingDetails, badReq ] = props.data();
+  console.log(roomData);
+  console.log(hotelData);
+  console.log(badReq);
+  
+  
   // const [hotelData, setHotelData] = useState(null);
   // const [roomData, setRoomData] = useState(null);
   // const [badReq, setBadReq] = useState(false);
@@ -83,18 +85,17 @@ function HotelPage(props) {
 
   //console.log(hotelData);
 
-  
-
-  if (!(hotelData && roomData && completed)) {
     return (
+      <>
+      {
+      (badReq) ? 
+      <div><p>An error has occurred due to your inputs, please try another entry.</p> <Link to = "/">Please re-start your booking via the following link</Link></div> : 
+      (!(hotelData && roomData && !badReq)) ?
       <div>
       <div>loading...</div>
       <Spinner animation="border" role="status"></Spinner>
-      </div>
-    )
-  } 
-  else if ((hotelData && roomData && completed)) {
-    return (
+      </div> : 
+      ((hotelData && roomData && !badReq)) ? 
       <React.Fragment>
         <Header name={hotelData.name} />
         <Address address={hotelData.address} />
@@ -109,15 +110,10 @@ function HotelPage(props) {
           address={hotelData.address}
         />
         <HotelRoomTable room_data={roomData} booking_details={[bookingDetails, hotelData.name]} />
-      </React.Fragment>
-    );
- }  
-  else if (badReq) {
-    return (
-      <div><p>An error has occurred due to your inputs, please try another entry.</p> <Link to = "/">Please re-start your booking via the following link</Link></div>
-    )
-  }
-  
-}
+      </React.Fragment> : null
 
+      }
+      </>
+    )
+}
 export default HotelPage;

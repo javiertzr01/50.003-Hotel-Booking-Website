@@ -40,17 +40,14 @@ function List(props) {
   let getHotelData = (props.data)();
   const [dest_id, checkin, checkout, lang, currency, adult, children, room] = props.object_input_data;
   let data = useMemo(() => getHotelDataFromCallback(getHotelData, 0), [getHotelData]);
-  const completed = getHotelData[1]
-  const searchComplete = getHotelData[2]
-  const lengthOfHotel = getHotelData[3]
-  const badReq = getHotelData[4]
+  const lengthOfHotel = getHotelData[2]
+  const badReq = getHotelData[3]
   const [currentItems, setCurrentItems] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
   const [timeout, setTimer] = useState(false);
   const guests = parseInt(adult) + parseInt(children);
   const guest_str = createGuestRoomStr(room,guests);
-  console.log("loaded alr");
 
   const itemsPerPage = 5;
 
@@ -59,14 +56,12 @@ function List(props) {
     if (!lengthOfHotel) {
       setTimeout(() => {
         setTimer(true);
-    }, 10000);
+    }, 15000);
     }
   }, [])
 
-  console.log(timeout);
 
   useEffect(() => {
-    console.log(badReq);
   }, [badReq])
 
   useEffect(() => {
@@ -92,7 +87,7 @@ function List(props) {
   return (
     <>
     {
-    ( timeout == false && badReq === false && lengthOfHotel === 0) ? 
+    (timeout == false && badReq === false && lengthOfHotel === 0) ? 
     <div>
       <div>loading...</div>
       <Spinner animation="border" role="status"></Spinner>
