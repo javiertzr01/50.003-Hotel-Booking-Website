@@ -1,10 +1,12 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import ReactPaginate from 'react-paginate';
-import Placeholder from 'react-bootstrap/Placeholder';
 import Spinner from 'react-bootstrap/Spinner';
+import { Link } from "react-router-dom"
+import { Layout, Menu } from 'antd';
+import { CalendarOutlined } from '@ant-design/icons';
 import './List.css'
-import {Link} from "react-router-dom"
 
+const { Header, Content, Footer, Sider } = Layout;
 
 function createGuestRoomStr(room,guests){
   let guest_string = guests.toString();
@@ -39,6 +41,7 @@ function getHotelDataFromCallback(data, num){
 function List(props) {
   let getHotelData = (props.data)();
   const [dest_id, checkin, checkout, lang, currency, adult, children, room] = props.object_input_data;
+  const props_arr = [checkin, checkout, adult, children, room]
   let data = useMemo(() => getHotelDataFromCallback(getHotelData, 0), [getHotelData]);
   const lengthOfHotel = getHotelData[2]
   const badReq = getHotelData[3]
@@ -49,7 +52,26 @@ function List(props) {
   const guests = parseInt(adult) + parseInt(children);
   const guest_str = createGuestRoomStr(room,guests);
 
-  const itemsPerPage = 5;
+  const itemsPerPage = 3;
+
+  const items2 = [CalendarOutlined].map((icon, index) => {
+    const key = String(index + 1);
+    const arr = ['Check-in Date', 'Check-out Date', 'Number of Adult', 'Number of Children', 'Number of Rooms']
+    //console.log(key)
+    return {
+      key: `sub${key}`,
+      icon: React.createElement(icon),
+      label: `View booking information`,
+      children: props_arr.map((item, j) => {
+        const subKey = j;
+        //console.log(j)
+        return {
+          key: subKey,
+          label: `${arr[j]}: ${item}`,
+        };
+      }),
+    };
+  });
 
   //create timer 
   useEffect(() => {
@@ -86,13 +108,44 @@ function List(props) {
 
   return (
     <>
+    <Layout>
+    <Header className="header">
+      <div className="logo" />
+      <Menu theme="dark" mode="horizontal" />
+    </Header>
+    <Content
+      style={{
+        padding: '0 2%',
+      }}
+    >
+      <Layout
+        className="site-layout-background"
+        style={{
+          padding: '1% 0',
+        }}
+      >
+        <Sider className="site-layout-background" width={300}>
+          <Menu
+            mode="inline"
+            defaultSelectedKeys={['1']}
+            defaultOpenKeys={['sub1']}
+            style={{
+              height: '100%'
+            }}
+            items={items2}
+          />
+        </Sider>
+        <Content 
+      style={{
+        padding: '0 2%',
+      }}>
+    <div className="site-layout-content">
     {
-    (timeout == false && badReq === false && lengthOfHotel === 0) ? 
+    (timeout === false && badReq === false && lengthOfHotel === 0) ? 
     <div>
-      <div>loading...</div>
-      <Spinner animation="border" role="status"></Spinner>
+      <Spinner animation="border" role="status" style={{ width: "4rem", height: "4rem" }}></Spinner>
     </div> :
-    (timeout == true && lengthOfHotel == 0 && badReq === false) ? 
+    (timeout === true && lengthOfHotel === 0 && badReq === false) ? 
     <div>
       <p>There are no hotels currently available, please refresh again or try another entry.</p> 
       <Link to = "/">Please re-start your booking via the following link</Link>
@@ -100,21 +153,28 @@ function List(props) {
     (lengthOfHotel !== 0 && badReq === false) ?  
     <div>
     <div>{currentItems.map(hotel => {
+      //console.log(hotel.image_details.prefix.slice(0,-1) + hotel.image_details.suffix)
         return (
-          <div key={hotel.id} className='border'>
-            <p>Name: {hotel.name}</p>
-            <p>Address: {hotel.address}</p>
-            <p>Price: {hotel.price}</p>
-            <div>
-            <Link to={`/hotel?hotel_id=${hotel.id}&destination_id=${dest_id}&checkin=${checkin}&checkout=${checkout}&lang=en_US&currency=${currency}&guests=${guest_str}`}
-            state = {[hotel.id, dest_id, checkin, checkout, currency, adult, children, room]}
-            >Select for Booking!</Link>
+        <div id="hotelname">
+            <div id="sideBar"></div>
+            <div id="content">
+            <div key={hotel.id} className='border card'>
+              <p>Name: {hotel.name}</p>
+              <p>Address: {hotel.address}</p>
+              <p>Price: {hotel.price}</p>
+              <div>
+              <Link to={`/hotel?hotel_id=${hotel.id}&destination_id=${dest_id}&checkin=${checkin}&checkout=${checkout}&lang=en_US&currency=${currency}&guests=${guest_str}`}
+              state = {[hotel.id, dest_id, checkin, checkout, currency, adult, children, room]}
+              >Select for Booking!</Link>
+              </div>
             </div>
           </div>
+        </div>
           );
         })
       }
     </div>
+    <div className='border-page'>
     <ReactPaginate
         breakLabel="..."
         nextLabel="next >"
@@ -127,11 +187,23 @@ function List(props) {
         subContainerClassName={"pages pagination"}
         activeClassName={"active"}
       />
+      </div>
     </div> : 
       (badReq === true) ? <div><p>An error has occurred due to your inputs, please try another entry.</p> <Link to = "/">Please re-start your booking via the following link</Link> </div> : null
     }   
+    </div>
+    </Content>
+      </Layout>
+    </Content>
+    <Footer
+      style={{
+        textAlign: 'center',
+      }}
+    >
+      Done by our dearest group members ©2022
+    </Footer>
+  </Layout>
     </>
   );
-
 }
 export default List;
