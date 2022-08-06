@@ -8,10 +8,9 @@ import axios from "axios";
 import Spinner from "react-bootstrap/Spinner";
 
 function Destinations(props) {
-  const { setDestHandler, dest, formErrors } = props;
+  const { setDestHandler, formErrors } = props;
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   const onChange = (event, value) => {
     if (value) {
@@ -26,14 +25,10 @@ function Destinations(props) {
       try {
         const response = await axios.get("http://localhost:4000/getData");
         if (response.data === null) {
-          console.log("error");
           response.data = "";
         }
-        console.log(response.data);
         setData(response.data);
-        setError(null);
       } catch (err) {
-        setError(err.message);
         setData(null);
       } finally {
         setLoading(false);
@@ -42,7 +37,6 @@ function Destinations(props) {
     getData();
   }, []);
 
-  const destinations = data && data.length > 0 && data.map((item) => item.term);
   const filterOptions = createFilterOptions({
     matchFrom: "any",
     limit: 50,

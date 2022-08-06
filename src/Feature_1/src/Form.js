@@ -3,8 +3,8 @@ import Destinations from "./components/Destinations";
 import Guests from "./components/Guests";
 import ChooseDate from "./components/ChooseDate";
 import "./App.css";
-import { useState, useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Navigate } from "react-router-dom";
 
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -17,37 +17,34 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 const theme = createTheme();
 
-function createGuestRoomStr(room,guests){
+function createGuestRoomStr(room, guests) {
   let guest_string = guests.toString();
-  
+
   //null error handling
-  if (!room || !guests){
-    return 
+  if (!room || !guests) {
+    return;
   }
 
   if (room === 1) {
     return guest_string;
-  }
-  else {
-    for(let i = 1; i < room; i++){
+  } else {
+    for (let i = 1; i < room; i++) {
       try {
-        guest_string = guest_string + "|" + guests.toString()
+        guest_string = guest_string + "|" + guests.toString();
       } catch (error) {
         if (error instanceof RangeError) {
           guest_string = null;
           break;
         }
-    } 
-    return guest_string;
+      }
+      return guest_string;
     }
   }
 }
 
 export default function Form() {
-  const [errors, setError] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formErrors, setFormErrors] = useState({});
-  const [count, setCount] = useState(0);
 
   //useStates for guests:
   const [adult, setAdult] = useState(1);
@@ -64,14 +61,7 @@ export default function Form() {
   const formValues = { dest, adult, children, room, startDate, endDate };
   const currency = "SGD";
   const lang = "en_US";
-  const guests = parseInt(adult)+parseInt(children);
-
-  useEffect(() => {
-    console.log(formErrors);
-    if (Object.keys(formErrors).length === 0 && isSubmitted) {
-      //console.log(formValues);
-    }
-  }, [formErrors]);
+  const guests = parseInt(adult) + parseInt(children);
 
   const validate = (values) => {
     const errors = {};
@@ -97,53 +87,35 @@ export default function Form() {
     return errors;
   };
 
-  function errorHandler(val, num) {
-    //if value is null
-    if (JSON.stringify(val) === JSON.stringify({}) && num === 0) {
-      return 2;
-      //"button not pressed.";
-    } else if (JSON.stringify(val) === JSON.stringify({}) && num > 0) {
-      return 3;
-      //"button pressed and no errors.";
-    } else {
-      return 4;
-      //"errors are present.";
-    }
-  }
-
   function handleSubmit(e) {
     e.preventDefault();
-    console.log(startDate);
-    console.log(endDate);
-    console.log(dest);
     setFormErrors(validate(formValues));
-    let value = errorHandler(formErrors, count);
-    setCount(count + 1);
-    if (value === 3) {
+    if (Object.keys(formErrors).length === 0) {
       setIsSubmitted(true);
     }
   }
 
-  if (isSubmitted && count > 0) {
+  if (Object.keys(formErrors).length === 0 && isSubmitted) {
     return (
       <Navigate
         to={`/search?destination_id=${dest}&checkin=${
           startDate ? startDate.toISOString().split("T")[0] : ""
         }&checkout=${
           endDate ? endDate.toISOString().split("T")[0] : ""
-        }&lang=${lang}&currency=${currency}&guests=${
-          createGuestRoomStr(room,guests)
-        }`}
-        state={
-          [dest,
+        }&lang=${lang}&currency=${currency}&guests=${createGuestRoomStr(
+          room,
+          guests
+        )}`}
+        state={[
+          dest,
           startDate.toISOString().split("T")[0],
           endDate.toISOString().split("T")[0],
           lang,
           currency,
           adult,
           children,
-          room]
-        }
+          room,
+        ]}
       />
     );
   }
@@ -183,7 +155,9 @@ export default function Form() {
                   name="Destination"
                 />
               </Grid>
-              <p> Please enter number of guests per room</p>
+              <Grid item xs={12}>
+                <p> Please enter number of guests per room:</p>
+              </Grid>
               <Guests
                 setAdultHandler={setAdult}
                 setChildrenHandler={setChildren}
