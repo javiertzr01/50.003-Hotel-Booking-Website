@@ -6,14 +6,15 @@
     margin-top: 2%;
     margin-left: auto;
     position: relative;
-    margin-right: auto
+    margin-right: auto;
 }
 
 .border-page{
-    text-align: center;
     position: relative;
+    display: flex;
     width: 100%;
-    margin-top: 2%;
+    margin-top: 3%;
+    align-items: stretch;
 }
 
 .img-fix{
@@ -66,19 +67,12 @@
 }
 
 .pagination {
-    margin-top: 1.5%;
     margin-left: auto;
     margin-right: auto;
-    display: flex;
-    list-style: none;
-    outline: none;
    }
 
   .pagination-menu{
-  position: absolute;
   background-color: #1890ff;
-  top: 10%;
-  right: 3.5%;
   }
     
    .pagination>.active>a {
@@ -157,6 +151,7 @@
         box-shadow: 0 1px 1px -1px hsla(240, 30.1%, 28%, 0.25), 0 5px 10px -8px hsla(0, 0%, 0%, 0.3), 0 -6px 6px -6px hsla(0, 0%, 0%, 0.03);
         transition: all ease 200ms;
     }
+
     
     #content {
     flex: 1 0 auto;

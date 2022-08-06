@@ -38,7 +38,6 @@ function getHotelDataFromCallback(data, num){
   return data[num]
 }
 
-
 function List(props) {
   let getHotelData = (props.data)();
   const [dest_id, checkin, checkout, lang, currency, adult, children, room] = props.object_input_data;
@@ -53,7 +52,6 @@ function List(props) {
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const guests = parseInt(adult) + parseInt(children);
   const guest_str = createGuestRoomStr(room,guests);
-
   const items2 = [CalendarOutlined].map((icon, index) => {
     const key = String(index + 1);
     const arr = ['Check-in Date', 'Check-out Date', 'Number of Adult', 'Number of Children', 'Number of Rooms']
@@ -67,7 +65,7 @@ function List(props) {
         //console.log(j)
         return {
           key: subKey,
-          label: `${arr[j]}: ${item}`,
+          label: `${arr[j]}: ${!item && item !== 0 ? "-" : item}`,
         };
       }),
     };
@@ -157,7 +155,10 @@ function List(props) {
       //console.log(hotel.image_details.prefix.slice(0,-1) + hotel.image_details.suffix)
         return (
         <div id="hotelname">
-            <div id="sideBar"><img  className="img-fix" src={`https://www.kaligo.com/images/new/${hotel.id}/i1.jpg?fit=cover&h=250&w=250`}></img></div>
+            <div id="sideBar">
+              <img  id = {`image-${hotel.id}`} className="img-fix" src={`https://www.kaligo.com/images/new/${hotel.id}/i1.jpg?fit=cover&h=250&w=250`}
+              />
+              </div>
             <div id="content">
             <div key={hotel.id} className='border card'>
               <h3 className = "title">{hotel.name}</h3>

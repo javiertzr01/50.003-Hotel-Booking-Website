@@ -22,7 +22,6 @@ function sort_data(data){
         }
       }
     }
-    console.log(final)
     return final;
   }
 
