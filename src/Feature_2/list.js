@@ -2,8 +2,8 @@ import React, { useEffect, useState, useMemo } from 'react';
 import ReactPaginate from 'react-paginate';
 import Spinner from 'react-bootstrap/Spinner';
 import { Link } from "react-router-dom"
-import { Layout, Menu } from 'antd';
-import { CalendarOutlined } from '@ant-design/icons';
+import { Layout, Menu, Button } from 'antd';
+import { CalendarOutlined, CheckOutlined } from '@ant-design/icons';
 import './List.css'
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -148,7 +148,7 @@ function List(props) {
     (timeout === true && lengthOfHotel === 0 && badReq === false) ? 
     <div>
       <p>There are no hotels currently available, please refresh again or try another entry.</p> 
-      <Link to = "/">Please re-start your booking via the following link</Link>
+      <Link to = "/">Please re-start your booking.</Link>
     </div> :
     (lengthOfHotel !== 0 && badReq === false) ?  
     <div>
@@ -156,16 +156,18 @@ function List(props) {
       //console.log(hotel.image_details.prefix.slice(0,-1) + hotel.image_details.suffix)
         return (
         <div id="hotelname">
-            <div id="sideBar"></div>
+            <div id="sideBar"><img  className="img-fix" src={`https://www.kaligo.com/images/new/${hotel.id}/i1.jpg?fit=cover&h=250&w=250`}></img></div>
             <div id="content">
             <div key={hotel.id} className='border card'>
               <p>Name: {hotel.name}</p>
               <p>Address: {hotel.address}</p>
               <p>Price: {hotel.price}</p>
               <div>
-              <Link to={`/hotel?hotel_id=${hotel.id}&destination_id=${dest_id}&checkin=${checkin}&checkout=${checkout}&lang=en_US&currency=${currency}&guests=${guest_str}`}
-              state = {[hotel.id, dest_id, checkin, checkout, currency, adult, children, room]}
-              >Select for Booking!</Link>
+                <Button type="primary" size={'large'} className = "purchase-btn">
+                   <Link to={`/hotel?hotel_id=${hotel.id}&destination_id=${dest_id}&checkin=${checkin}&checkout=${checkout}&lang=en_US&currency=${currency}&guests=${guest_str}`}
+                   state = {[hotel.id, dest_id, checkin, checkout, currency, adult, children, room]}
+                   >Select for Booking!</Link>
+                </Button>
               </div>
             </div>
           </div>
@@ -187,9 +189,9 @@ function List(props) {
         subContainerClassName={"pages pagination"}
         activeClassName={"active"}
       />
-      </div>
+    </div>
     </div> : 
-      (badReq === true) ? <div><p>An error has occurred due to your inputs, please try another entry.</p> <Link to = "/">Please re-start your booking via the following link</Link> </div> : null
+      (badReq === true) ? <div><p>An error has occurred due to your inputs, please try another entry.</p> <Link to = "/">Please re-start your booking.</Link> </div> : null
     }   
     </div>
     </Content>

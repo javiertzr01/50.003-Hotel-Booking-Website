@@ -22,7 +22,7 @@ function sort_data(data){
         }
       }
     }
-    console.log(prices)
+    console.log(final)
     return final;
   }
 
