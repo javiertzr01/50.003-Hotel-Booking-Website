@@ -2,8 +2,9 @@ import React, { useEffect, useState, useMemo } from 'react';
 import ReactPaginate from 'react-paginate';
 import Spinner from 'react-bootstrap/Spinner';
 import { Link } from "react-router-dom"
-import { Layout, Menu, Button } from 'antd';
-import { CalendarOutlined, CheckOutlined } from '@ant-design/icons';
+import { Layout, Menu, Button, Rate } from 'antd';
+import { CalendarOutlined } from '@ant-design/icons';
+import {DropdownButton, Dropdown} from 'react-bootstrap';
 import './List.css'
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -49,10 +50,9 @@ function List(props) {
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
   const [timeout, setTimer] = useState(false);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
   const guests = parseInt(adult) + parseInt(children);
   const guest_str = createGuestRoomStr(room,guests);
-
-  const itemsPerPage = 3;
 
   const items2 = [CalendarOutlined].map((icon, index) => {
     const key = String(index + 1);
@@ -115,7 +115,7 @@ function List(props) {
     </Header>
     <Content
       style={{
-        padding: '0 2%',
+        padding: '0 15%',
       }}
     >
       <Layout
@@ -134,16 +134,17 @@ function List(props) {
             }}
             items={items2}
           />
+
         </Sider>
         <Content 
       style={{
-        padding: '0 2%',
+        padding: '0 0%',
       }}>
     <div className="site-layout-content">
     {
     (timeout === false && badReq === false && lengthOfHotel === 0) ? 
     <div>
-      <Spinner animation="border" role="status" style={{ width: "4rem", height: "4rem" }}></Spinner>
+      <Spinner animation="border" role="status" style={{ width: "5rem", height: "5rem" }}></Spinner>
     </div> :
     (timeout === true && lengthOfHotel === 0 && badReq === false) ? 
     <div>
@@ -159,9 +160,11 @@ function List(props) {
             <div id="sideBar"><img  className="img-fix" src={`https://www.kaligo.com/images/new/${hotel.id}/i1.jpg?fit=cover&h=250&w=250`}></img></div>
             <div id="content">
             <div key={hotel.id} className='border card'>
-              <p>Name: {hotel.name}</p>
-              <p>Address: {hotel.address}</p>
-              <p>Price: {hotel.price}</p>
+              <h3 className = "title">{hotel.name}</h3>
+              <p className = "address">{hotel.address}</p>
+              <a target="_blank" href={`https://www.google.com/maps/search/?api=1&query=${hotel.latitude},${hotel.longitude}`}className = "viewmap">View me in Maps!</a>
+              <h2 className = "price">{hotel.price} {currency}</h2>
+              <Rate className = "rating" disabled defaultValue={hotel.rating} />
               <div>
                 <Button type="primary" size={'large'} className = "purchase-btn">
                    <Link to={`/hotel?hotel_id=${hotel.id}&destination_id=${dest_id}&checkin=${checkin}&checkout=${checkout}&lang=en_US&currency=${currency}&guests=${guest_str}`}
@@ -189,7 +192,13 @@ function List(props) {
         subContainerClassName={"pages pagination"}
         activeClassName={"active"}
       />
-    </div>
+   <DropdownButton id="dropdown-item-button" className="pagination-menu" title="Hotels per Page" onSelect={(e)=>{console.log(e);setItemsPerPage(parseInt(e))}}>
+        <Dropdown.Item as="button" eventKey='5'>5 / Page</Dropdown.Item>
+        <Dropdown.Item as="button" eventKey='10'>10 / Page</Dropdown.Item>
+        <Dropdown.Item as="button" eventKey='15'>15 / Page</Dropdown.Item>
+        <Dropdown.Item as="button" eventKey='20'>20 / Page</Dropdown.Item>
+    </DropdownButton>    
+      </div>
     </div> : 
       (badReq === true) ? <div><p>An error has occurred due to your inputs, please try another entry.</p> <Link to = "/">Please re-start your booking.</Link> </div> : null
     }   
