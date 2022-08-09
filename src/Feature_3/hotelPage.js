@@ -11,6 +11,13 @@ import Book from "./components/hotelBook";
 import HotelRoomTable from "./components/hotelRoomTable";
 import { Link } from "react-router-dom";
 import Spinner from "react-bootstrap/Spinner";
+import { Layout, Menu, Button, Rate } from 'antd';
+import '../Feature_2/List.css';
+import './extras.css'
+
+
+const { Content, Footer, Sider } = Layout;
+
 
 function HotelPage(props) {
   const [roomData, hotelData, bookingDetails, badReq] = props.data();
@@ -86,6 +93,12 @@ function HotelPage(props) {
 
   return (
     <>
+    <Layout>
+    <Content 
+      style={{
+        padding: '0 0%',
+      }}>
+    <div className="site-layout-content2">
       {badReq ? (
         <div>
           <p>
@@ -147,6 +160,16 @@ function HotelPage(props) {
           </div>
         </React.Fragment>
       ) : null}
+          </div>
+    </Content>
+      <Footer
+      style={{
+        textAlign: 'center',
+      }}
+    >
+      Done by our dearest group members ©2022
+    </Footer>
+      </Layout>
     </>
   );
 }
