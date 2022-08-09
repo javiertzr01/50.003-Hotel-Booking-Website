@@ -70,7 +70,12 @@ function Destinations(props) {
           </Box>
         )}
         renderInput={(params) => (
-          <TextField {...params} label="Destination" name="DestTest" />
+          <TextField
+            {...params}
+            data-testid="destinations"
+            label="Destination"
+            name="DestTest"
+          />
         )}
         onChange={onChange}
       />
