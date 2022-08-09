@@ -99,17 +99,32 @@ export default function Form() {
     return (
       <Navigate
         to={`/search?destination_id=${dest}&checkin=${
-          startDate ? startDate.toISOString().split("T")[0] : ""
+          startDate
+            ? `${startDate.getFullYear()}-${(
+                "0" +
+                (startDate.getMonth() + 1)
+              ).slice(-2)}-${("0" + startDate.getDate()).slice(-2)}`
+            : ""
         }&checkout=${
-          endDate ? endDate.toISOString().split("T")[0] : ""
+          endDate
+            ? `${endDate.getFullYear()}-${(
+                "0" +
+                (endDate.getMonth() + 1)
+              ).slice(-2)}-${("0" + endDate.getDate()).slice(-2)}`
+            : ""
         }&lang=${lang}&currency=${currency}&guests=${createGuestRoomStr(
           room,
           guests
         )}`}
         state={[
           dest,
-          startDate.toISOString().split("T")[0],
-          endDate.toISOString().split("T")[0],
+          `${startDate.getFullYear()}-${(
+            "0" +
+            (startDate.getMonth() + 1)
+          ).slice(-2)}-${("0" + startDate.getDate()).slice(-2)}`,
+          `${endDate.getFullYear()}-${("0" + (endDate.getMonth() + 1)).slice(
+            -2
+          )}-${("0" + endDate.getDate()).slice(-2)}`,
           lang,
           currency,
           adult,
