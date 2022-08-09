@@ -10,7 +10,7 @@ const Map = ({ latitude, longitude, name, address }) => {
   const position = [latitude, longitude];
 
   return (
-    <div className="container text-center">
+    <div className="container text-center p-4">
       <h4>Map</h4>
       <div class="d-flex justify-content-center">
         <MapContainer center={position} zoom={20} scrollWheelZoom={false}>
