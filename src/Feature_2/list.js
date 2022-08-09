@@ -108,10 +108,6 @@ function List(props) {
     <>
     <div data-testid="main-block">
     <Layout>
-    <Header className="header">
-      <div className="logo" />
-      <Menu theme="dark" mode="horizontal" />
-    </Header>
     <Content
       style={{
         padding: '0 15%',
