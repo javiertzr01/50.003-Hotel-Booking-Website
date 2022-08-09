@@ -69,7 +69,19 @@ function Load_data() {
   let adult = !location.state ? null : location.state[5];
   let children = !location.state ? null : location.state[6];
   let room = !location.state ? null : location.state[7];
+
+  //for testing
+  // let dest_id = 'vJh2';
+  // let checkin = '2022-08-17';
+  // let checkout = '2022-08-24'; 
+  // let lang =  'en_US'; 
+  // let currency = 'SGD';  
+  // let adult = 1; 
+  // let children = 0; 
+  // let room = 1;
   
+  console.log(dest_id, checkin, checkout, lang, currency, adult, children, room)
+  console.log(location)
     // checks if state is defined, if not it will redirect to error
     useEffect(() => {
       if (!location.state) {

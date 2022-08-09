@@ -106,6 +106,7 @@ function List(props) {
 
   return (
     <>
+    <div data-testid="main-block">
     <Layout>
     <Header className="header">
       <div className="logo" />
@@ -215,6 +216,7 @@ function List(props) {
       Done by our dearest group members ©2022
     </Footer>
   </Layout>
+  </div>
     </>
   );
 }
