@@ -1,23 +1,23 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import Header from "./components/hotelHeader";
+import HotelPicture from "./components/hotelPicture";
 import Address from "./components/hotelAddress";
 import Rating from "./components/hotelRating";
 import Description from "./components/hotelDescription";
 import Amenities from "./components/hotelAmenities";
 import AmenitiesRatings from "./components/hotelAmenitiesRating";
 import Map from "./components/hotelMap";
+import Book from "./components/hotelBook";
 import HotelRoomTable from "./components/hotelRoomTable";
-import {Link} from "react-router-dom";
-import Spinner from 'react-bootstrap/Spinner';
-
+import { Link } from "react-router-dom";
+import Spinner from "react-bootstrap/Spinner";
 
 function HotelPage(props) {
-  const [ roomData, hotelData, bookingDetails, badReq ] = props.data();
+  const [roomData, hotelData, bookingDetails, badReq] = props.data();
   console.log(roomData);
   console.log(hotelData);
   console.log(badReq);
-  
-  
+
   // const [hotelData, setHotelData] = useState(null);
   // const [roomData, setRoomData] = useState(null);
   // const [badReq, setBadReq] = useState(false);
@@ -52,7 +52,6 @@ function HotelPage(props) {
   //   guests,
   // });
 
-
   // const [roomLink, setRoomLink] = useState(
   //   `hotels/${hotel_id}/price?destination_id=${dest_id}&checkin=${checkin}&checkout=${checkout}&lang=${lang}&currency=${currency}&partner_id=16&country_code=SG&guests=${guests}`
   // );
@@ -85,35 +84,70 @@ function HotelPage(props) {
 
   //console.log(hotelData);
 
-    return (
-      <>
-      {
-      (badReq) ? 
-      <div><p>An error has occurred due to your inputs, please try another entry.</p> <Link to = "/">Please re-start your booking via the following link</Link></div> : 
-      (!(hotelData && roomData && !badReq)) ?
-      <div>
-      <div>loading...</div>
-      <Spinner animation="border" role="status"></Spinner>
-      </div> : 
-      ((hotelData && roomData && !badReq)) ? 
-      <React.Fragment>
-        <Header name={hotelData.name} />
-        <Address address={hotelData.address} />
-        <Rating rating={hotelData.rating} />
-        <Description description={hotelData.description} />
-        <AmenitiesRatings amenities_ratings={hotelData.amenities_ratings} />
-        <Amenities amenities={hotelData.amenities} />
-        <Map
-          latitude={hotelData.latitude}
-          longitude={hotelData.longitude}
-          name={hotelData.name}
-          address={hotelData.address}
-        />
-        <HotelRoomTable room_data={roomData} booking_details={[bookingDetails, hotelData.name]} />
-      </React.Fragment> : null
-
-      }
-      </>
-    )
+  return (
+    <>
+      {badReq ? (
+        <div>
+          <p>
+            An error has occurred due to your inputs, please try another entry.
+          </p>{" "}
+          <Link to="/">
+            Please re-start your booking via the following link
+          </Link>
+        </div>
+      ) : !(hotelData && roomData && !badReq) ? (
+        <div>
+          <div>Loading...</div>
+          <Spinner animation="border" role="status"></Spinner>
+        </div>
+      ) : hotelData && roomData && !badReq ? (
+        <React.Fragment>
+          <div className="container">
+            <div className="row align-items-center justify-content-between">
+              <div className="col p-4">
+                <Header name={hotelData.name} />
+                <Address address={hotelData.address} />
+                <Rating rating={hotelData.rating} />
+              </div>
+              <div className="col p-4">
+                <HotelPicture id={hotelData.id} />
+              </div>
+            </div>
+          </div>
+          <div className="container">
+            <div className="row align-items-top justify-content-between">
+              <div className="col-8 p-4">
+                <Description description={hotelData.description} />
+                <Map
+                  latitude={hotelData.latitude}
+                  longitude={hotelData.longitude}
+                  name={hotelData.name}
+                  address={hotelData.address}
+                />
+              </div>
+              <div className="col-4">
+                <AmenitiesRatings
+                  amenities_ratings={hotelData.amenities_ratings}
+                />
+                <Amenities amenities={hotelData.amenities} />
+              </div>
+            </div>
+          </div>
+          <div className="container">
+            <div className="row align-items-center justify-content-between p-4">
+              <Book
+                room_data={roomData}
+                booking_details={[bookingDetails, hotelData.name]}
+              />
+              <HotelRoomTable
+                room_data={roomData}
+                booking_details={[bookingDetails, hotelData.name]}
+              />
+            </div>
+          </div>
+        </React.Fragment>
+      ) : null}
+    </>
+  );
 }
 export default HotelPage;

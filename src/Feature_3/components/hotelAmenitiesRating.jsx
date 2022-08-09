@@ -5,17 +5,17 @@ const AmenitiesRatings = ({ amenities_ratings }) => {
     amenities_ratings.length === 0 ? (
       <p>No amenities ratings available.</p>
     ) : (
-      <ul>
+      <ul className="list-group">
         {amenities_ratings.map((amenity) => (
-          <li key={amenity.name}>
-            {amenity.name} : {amenity.score}
+          <li key={amenity.name} className="list-group-item">
+            {amenity.name}: {amenity.score}
           </li>
         ))}
       </ul>
     );
 
   return (
-    <div>
+    <div className="container p-4">
       <h3>Amenities Ratings</h3>
       {amenities_ratings_desc}
     </div>

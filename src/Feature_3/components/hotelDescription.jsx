@@ -2,10 +2,9 @@ import React from "react";
 
 const Description = ({ description }) => {
   return (
-    <div className="container">
+    <div className="container text-start">
       <h2>Description</h2>
       <p
-        className="text-start"
         dangerouslySetInnerHTML={{
           __html: description
             ? description

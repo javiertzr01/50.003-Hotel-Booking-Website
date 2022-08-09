@@ -6,7 +6,8 @@ const HotelRoomTable = ({ room_data, booking_details }) => {
   const { hotel_id, dest_id, checkin, checkout, lang, currency, guests } =
     booking_details[0];
   const hotel_name = booking_details[1];
-  console.log(hotel_name);
+  // console.log(hotel_name);
+  // console.log(room_data.rooms);
 
   return (
     <table className="table table-bordered">
@@ -28,7 +29,9 @@ const HotelRoomTable = ({ room_data, booking_details }) => {
                 )}
               </b>
               <br />
-              {`${room.price} ${currency}`}
+              <span className="fw-semibold">{`${Math.round(
+                room.lowest_converted_price
+              )} ${currency}`}</span>
               <br />
               <HotelRoomPicture pictures={room.images} />
               <br />
@@ -37,7 +40,7 @@ const HotelRoomTable = ({ room_data, booking_details }) => {
                 className="btn btn-primary btn-lg"
                 to={`/submission?hotel_id=${hotel_id}&destination_id=${dest_id}&checkin=${checkin}&checkout=${checkout}&lang=${lang}&currency=${currency}&guests=${guests}&key=${room.key}`}
                 state={[
-                  room.price,
+                  room.lowest_converted_price,
                   hotel_id,
                   dest_id,
                   checkin,

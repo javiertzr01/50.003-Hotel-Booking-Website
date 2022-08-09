@@ -27,17 +27,19 @@ const Amenities = ({ amenities }) => {
     Object.keys(amenities).length === 0 ? (
       <p>No amenities information available.</p>
     ) : (
-      <ul>
+      <ul className="list-group">
         {amenities_keys
           .filter((amenity) => Object.keys(amenities_map).includes(amenity))
           .map((amenity) => (
-            <li key={amenity}>{amenities_map[amenity]}: Y</li>
+            <li key={amenity} className="list-group-item">
+              {amenities_map[amenity]}: Y
+            </li>
           ))}
       </ul>
     );
 
   return (
-    <div>
+    <div className="container p-4">
       <h3>Amenities</h3>
       {amenities_desc}
     </div>

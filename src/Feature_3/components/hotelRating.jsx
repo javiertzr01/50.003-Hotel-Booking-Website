@@ -5,9 +5,9 @@ const Rating = ({ rating }) => {
     return <p>No rating available.</p>;
   }
   return (
-    <p>
-      <span className="fw-bold">Rating:</span> {rating}
-    </p>
+    <div>
+      <span className="fw-bold">Rating: </span> {rating}
+    </div>
   );
 };
 
