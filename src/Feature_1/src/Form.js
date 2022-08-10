@@ -93,6 +93,11 @@ export default function Form() {
     if (Object.keys(formErrors).length === 0) {
       setIsSubmitted(true);
     }
+    console.log("children");
+    if (!children) {
+      setChildren(0);
+    }
+    console.log(children);
   }
 
   if (Object.keys(formErrors).length === 0 && isSubmitted) {
